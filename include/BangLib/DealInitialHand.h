@@ -1,0 +1,22 @@
+#pragma once
+
+#include <GameStates.h>
+
+#include <State.h>
+
+namespace Bang
+{
+
+class DealInitialHand : public State<GameStates>
+{
+public:
+  DealInitialHand() = default;
+  
+public:
+  auto Update(GameState &gameState) -> bool override;
+
+  auto Type() const -> GameStates override
+  { return GameStates::DealInitialHand; }
+};
+
+} // namespace Bang
