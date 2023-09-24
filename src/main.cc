@@ -1,89 +1,136 @@
-#include <BangLib/GenerateCharacters.h>
+#include <BangLib/Application.h>
+#include <BangLib/CreatePlayers.h>
 #include <BangLib/GameState.h>
 #include <BangLib/GameStates.h>
 #include <BangLib/StateManager.h>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <BangLib/TextUtils.h>
 
 #include <iostream>
 
-auto main() -> int
+namespace
 {
 
-  if(SDL_Init(SDL_INIT_EVERYTHING))
-  {
-    std::cerr << "Couldn't initialize SDL2: " << SDL_GetError() << std::endl;
-    return -1;
-  }
+constexpr auto WindowWidth = 1024u;
+constexpr auto WindowHeight = 720u;
 
-  if(IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG)
-  {
-    std::cerr << "Couldn't initialize SDL2 image: " << IMG_GetError() << std::endl;
-    return -1;
-  }
+constexpr auto CardsPerWindowHorizontal = 4;
+constexpr auto CardWidth = WindowWidth / CardsPerWindowHorizontal;
+constexpr auto CardsPerWindowVertical = 4;
+constexpr auto CardHeight = WindowHeight / CardsPerWindowVertical;
 
-  auto *window = SDL_CreateWindow("Bang", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN);
-  if(!window)
-  {
-    std::cerr << "Couldn't create window: " << SDL_GetError() << std::endl;
-    return -1;
-  }
+const std::vector<SDL_Point> PlayerPositions {
+  {0, CardHeight},
+  {WindowWidth - CardWidth, CardHeight}
+};
+  
+} // namespace 
 
-  auto *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if(!renderer)
+auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::GameState &gameState) -> void
+{
+  for(auto playerIndex = 0u; playerIndex < gameState.players.size(); ++playerIndex)
   {
-    std::cerr << "Couldn't create renderer: " << SDL_GetError() << std::endl;
-    return -1;
-  }
-
-  auto *surface = IMG_Load("image.jpg");
-  if(!surface)
-  {
-    std::cerr << "Couldn't load image: " << IMG_GetError() << std::endl;
-    return -1;
-  }
-
-  auto *texture = SDL_CreateTextureFromSurface(renderer, surface);
-  if(!texture)
-  {
-    std::cerr << "Couldn't create texture: " << SDL_GetError() << std::endl;
-    return -1;
-  }
-
-  Bang::StateManager<Bang::State<GameStates>> stateManager {std::unique_ptr<Bang::GenerateCharacters> {new Bang::GenerateCharacters}};
-  Bang::GameState gameState;
-
-  SDL_Event event;
-  while(event.type != SDL_QUIT)
-  {
-    if(SDL_PollEvent(&event))
+    std::cerr << "Drawing player #" << playerIndex << " state." << std::endl;
+    const auto &player = gameState.players[playerIndex];
+    if(!player)
+      throw Bang::Exception {"Null player found when drawing the game state." };
+    
+    const auto &cardsInHand = player->CardsInHand();
+    const auto playerTopLeft = ::PlayerPositions[playerIndex];
+    std::cerr << "Player #" << playerIndex << " position: " << playerTopLeft.x << ", " << playerTopLeft.y << std::endl;
+    for(auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
     {
-      if(event.type == SDL_QUIT)
-        break;
-      else if(event.type == SDL_KEYDOWN)
-      {
-        if(event.key.keysym.sym == SDLK_ESCAPE)
-        break;
-      }
+      std::cerr << "Drawing card #" << cardIndex <<" state." << std::endl;
+      const SDL_Rect cardPosition {
+        playerTopLeft.x,
+        playerTopLeft.y + static_cast<int32_t>(cardIndex * ::CardHeight),
+        ::CardWidth,
+        ::CardHeight
+      };
+
+      std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
+      renderer->RenderTexture(cardsInHand[cardIndex]->Texture(), nullptr, &cardPosition);
+      std::cerr << " Card #" << cardIndex << " drawn." << std::endl;
     }
 
-    stateManager.Update(gameState);
+    std::cerr << "Drawing player #" << playerIndex << "'s character." << std::endl;
+    auto *character = player->Character();
+    if(!character)
+    {
+      std::cerr << "No character available." << std::endl;
+      return;
+    }
 
-    SDL_Rect rect {0, 0, 100, 100};
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, nullptr, &rect);
-    SDL_RenderPresent(renderer);
+    const SDL_Rect characterPosition {
+      playerTopLeft.x,
+      playerTopLeft.y + static_cast<int32_t>(cardsInHand.size() * ::CardHeight),
+      ::CardWidth,
+      ::CardHeight
+    };
+    
+    std::cerr << "Character position: " << characterPosition.x << ", " << characterPosition.y << ", " << characterPosition.w << ", " << characterPosition.h << std::endl;
+    renderer->RenderTexture(character->Texture(), nullptr, &characterPosition);
+    std::cerr << "Drawing player #" << playerIndex << "'s character finished." << std::endl;
+  }
+}
+
+auto main() -> int
+{
+  try
+  {
+    auto &application = Bang::Application::Get();
+    auto &window = application.renderingComponent->window;
+    window = std::unique_ptr<Bang::Window> {new Bang::Window {::WindowWidth, ::WindowHeight, "Bang"}};
+    auto &renderer = window->renderer;
+
+    const auto fontName = "./font.ttf";
+
+    auto *font = Bang::LoadFontFromFile(fontName, 180u);
+    if(!font)
+      throw Bang::Exception {""};
+
+    application.contentStorageComponent->AddFont(fontName, font);
+
+    Bang::StateManager<Bang::State<GameStates>> stateManager {std::unique_ptr<Bang::State<GameStates>> {new Bang::CreatePlayers}};
+    Bang::GameState gameState;
+
+    SDL_Event event;
+    while(event.type != SDL_QUIT)
+    {
+      std::cerr << "Polling events." << std::endl;
+      if(SDL_PollEvent(&event))
+      {
+        if(event.type == SDL_QUIT)
+          break;
+        else if(event.type == SDL_KEYDOWN)
+        {
+          if(event.key.keysym.sym == SDLK_ESCAPE)
+          break;
+        }
+      }
+
+      std::cerr << "Event polling finished." << std::endl;
+      std::cerr << "Updating the state manager." << std::endl;
+      stateManager.Update(gameState);
+      std::cerr << "State manager updated." << std::endl;
+
+      std::cerr << "Clearing renderer." << std::endl;
+      renderer->ClearRenderer(SDL_Color {255, 255, 255, 255});
+      std::cerr << "Renderer cleared." << std::endl;
+
+      std::cerr << "Drawing the game state." << std::endl;
+      DrawGameState(renderer, gameState);
+      std::cerr << "Drawing finished" << std::endl;
+
+      std::cerr << "Presenting the rendererd frame." << std::endl;
+      renderer->RenderPresent();
+      std::cerr << "Presenting finished." << std::endl;
+    }
+  }
+  catch(const Bang::Exception &e)
+  {
+    std::cerr << e.Message() << std::endl;
+    return -1;
   }
 
-  SDL_DestroyTexture(texture);
-
-  SDL_FreeSurface(surface);
-
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(window);
-
-  IMG_Quit();
-  SDL_Quit();
   return 0;
 }

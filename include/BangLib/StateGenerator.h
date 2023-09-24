@@ -1,25 +1,33 @@
-#pragma once
+#ifndef _STATE_GENERATOR_H_
+#define _STATE_GENERATOR_H_
 
-#include <memory>
+#include <MacroUtils.h>
+#include <State.h>
 
 namespace Bang
 {
 
-template <typename StateMachineType>
-class State;
 class GameState;
-template <typename StateType>
-auto GetNextState(const std::unique_ptr<StateType> &state, const GameState &gameState) -> std::unique_ptr<StateType>
+template <typename StateMachinType, StateMachinType enumValue>
+auto GetNextState(const StatePointer<StateMachinType> &state, const GameState &gameState) -> StatePointer<StateMachinType>
 {}
 
 } // namespace Bang
 
-#define GENERATE_NEXT_STATE_FUNCTION(stateMachineName)\
+#endif
+
+#define GENERATE_STATE(stateMachineName, stateName)\
   namespace Bang\
   {\
   \
   template <>\
-  auto GetNextState(const std::unique_ptr<State<stateMachineName>> &state, const GameState &gameState) -> std::unique_ptr<State<stateMachineName>>;\
+  auto GetNextState<stateMachineName, DOUBLE_COLON_CONCAT_HELPER(stateMachineName, stateName)>(\
+    const StatePointer<stateMachineName> &state,\
+    const GameState &gameState) -> StatePointer<stateMachineName>;\
   \
   } // namespace Bang\
   \
+
+#include INCLUDE_FILE
+
+#undef GENERATE_STATE

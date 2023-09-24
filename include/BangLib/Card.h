@@ -34,6 +34,11 @@ public:
   auto Number() const -> CardNumber
   { return _number; }
 
+  auto ToString() const -> std::string
+  {
+    return _name + " " + Bang::ToString(_suit) + " " + Bang::ToString(_number);
+  }
+
 private:
   const std::string _name = "";
   SDL_Texture *_texture = nullptr;
@@ -41,6 +46,7 @@ private:
   CardNumber _number = CardNumber::NumberOfCardNumbers;
 };
 
-using CardVector = std::vector<std::shared_ptr<Card>>;
+using CardPointer = std::shared_ptr<Card>;
+using CardPointerVector = std::vector<CardPointer>;
 
 } // namespace Bang

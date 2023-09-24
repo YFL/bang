@@ -2,8 +2,8 @@
 
 #include <Exception.h>
 #include <GameStates.h>
-#include <State.h>
 
+#include <iostream>
 #include <memory>
 
 namespace Bang
@@ -28,7 +28,11 @@ public:
       return;
 
     if(!_state->Update(gameState))
+    {
+      std::cerr << "Update finished. Setting new state." << std::endl;
       _state = GetNextState(_state, gameState);
+      std::cerr << "New state set." << std::endl;
+    }
   }
 
 private:
