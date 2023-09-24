@@ -1,8 +1,8 @@
 #include <GenerateCharacters.h>
 
 #include <Application.h>
-#include <Exception.h>
 #include <DealInitialHand.h>
+#include <Exception.h>
 #include <GameState.h>
 
 #include <iostream>
@@ -16,21 +16,9 @@ auto GenerateCharacterForPlayer(const Bang::PlayerPointer &player) -> void
   if(!renderer)
     throw Bang::Exception {"Renderer not available when generating a character to a player."};
 
-  const auto &fonts = Bang::Application::Get().contentStorageComponent->Fonts();
-  if(fonts.empty())
-    throw Bang::Exception {"No foint available"};
-
-  constexpr auto suit {Bang::Suit::Spade};
-  constexpr auto cardNumber {Bang::CardNumber::Ace};
-  const std::string name {std::string {"Character "} + Bang::ToString(suit) + " " + Bang::ToString(cardNumber)};
-
-  auto *font = fonts.cbegin()->second;
-  if(!font)
-    throw Bang::Exception {"Null font found when generating a character to a player."};
-  
-  auto *texture = renderer->TextToTexture(font, name, {255, 0, 0, 0});
-
-  player->Character(new Bang::Card {name, texture, suit, cardNumber});
+  const auto &characterCards = Bang::Application::Get().cardBankComponent->characterCards;
+  std::cout << "characterCards number: " << characterCards.size() << std::endl;
+  player->Character(characterCards[0].get());
 }
 
 } // namespace 

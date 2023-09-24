@@ -6,6 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include <iostream>
+
 namespace Bang
 {
 
@@ -29,6 +31,7 @@ SDL::SDL()
 
 SDL::~SDL()
 {
+  std::cout << "Destructing SDL" << std::endl;
   TTF_Quit();
   IMG_Quit();
   SDL_Quit();

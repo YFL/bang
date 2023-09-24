@@ -7,16 +7,25 @@ namespace Bang
 
 ContentStorageComponent::~ContentStorageComponent()
 {
-  for(auto &pair : _fonts)
+  static auto counter = 0;
+
+  std::cout << "Called " << counter++ << " times." << std::endl;
+  std::cout << "Destructing ContentStorageComponent." << std::endl;
+
+  std::cout << "Textures size: " << _textures.size() << std::endl;
+  for(auto &[_, texture] : _textures)
   {
-    TTF_CloseFont(pair.second);
-    pair.second = nullptr;
+    std::cout << "Closing texture " << _ << " " << texture << std::endl;
+    SDL_DestroyTexture(texture);
+    texture = nullptr;
   }
 
-  for(auto &pair : _textures)
+  std::cout << "Fonts size: " << _fonts.size() << std::endl;
+  for(auto &[_, font] : _fonts)
   {
-    SDL_DestroyTexture(pair.second);
-    pair.second = nullptr;
+    std::cout << "Closing font " << _ << " " << font << std::endl;
+    TTF_CloseFont(font);
+    font = nullptr;
   }
 }
 

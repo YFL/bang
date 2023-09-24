@@ -3,6 +3,7 @@
 #include <Application.h>
 #include <Exception.h>
 #include <GameState.h>
+#include <PlayCard.h>
 #include <PlayPhase.h>
 
 #include <iostream>
@@ -30,7 +31,7 @@ auto GenerateHandForPlayer(const Bang::PlayerPointer &player) -> void
   const auto name = std::string("PlayCard ") + Bang::ToString(suit) + " " + Bang::ToString(cardNumber);
   auto *texture = renderer->TextToTexture(font, name, SDL_Color {255, 0, 0, 0});
   contentStorageComponent->AddTexture(name, texture);
-  player->CardsInHand(Bang::CardPointerVector {std::make_shared<Bang::Card>("PlayCard", texture, suit, cardNumber)});
+  player->CardsInHand(Bang::CardPointerVector {std::make_shared<Bang::PlayCard>("PlayCard", texture, cardNumber, suit)});
 }
 
 } // namespace 

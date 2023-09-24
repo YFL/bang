@@ -4,7 +4,9 @@ namespace Bang
 {
 
 Application::Application()
-  : contentStorageComponent {new ContentStorageComponent}
+  : _sdl {}
+  , contentStorageComponent {new ContentStorageComponent}
+  , cardBankComponent {new CardBankComponent}
   , renderingComponent {new RenderingComponent}
 {
 

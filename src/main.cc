@@ -18,10 +18,12 @@ constexpr auto CardWidth = WindowWidth / CardsPerWindowHorizontal;
 constexpr auto CardsPerWindowVertical = 4;
 constexpr auto CardHeight = WindowHeight / CardsPerWindowVertical;
 
-const std::vector<SDL_Point> PlayerPositions {
+const std::vector<SDL_Rect> PlayerPositions {
   {0, CardHeight},
   {WindowWidth - CardWidth, CardHeight}
 };
+
+constexpr auto CardBundlesDirectoryPath = "./cardBundles";
   
 } // namespace 
 
@@ -79,17 +81,24 @@ auto main() -> int
   {
     auto &application = Bang::Application::Get();
     auto &window = application.renderingComponent->window;
+    std::cout << "Creating window." << std::endl;
     window = std::unique_ptr<Bang::Window> {new Bang::Window {::WindowWidth, ::WindowHeight, "Bang"}};
     auto &renderer = window->renderer;
 
-    const auto fontName = "./font.ttf";
+    // Loading the card banks requires a renderer.
+    std::cout << "Loading card banks." << std::endl;
+    application.cardBankComponent->LoadAllBanks(::CardBundlesDirectoryPath);
 
+    const auto fontName = "./font.ttf";
+    std::cout << "Loading font." << std::endl;
     auto *font = Bang::LoadFontFromFile(fontName, 180u);
     if(!font)
       throw Bang::Exception {""};
 
+    std::cout << "Adding font to content storage: " << fontName << " " << font << std::endl;
     application.contentStorageComponent->AddFont(fontName, font);
-
+    
+    std::cerr << "Creating state manager with CreatePlayers initial state." << std::endl;
     Bang::StateManager<Bang::State<GameStates>> stateManager {std::unique_ptr<Bang::State<GameStates>> {new Bang::CreatePlayers}};
     Bang::GameState gameState;
 
