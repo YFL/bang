@@ -5,16 +5,15 @@
 namespace Bang
 {
 
-class PlayPhase : public State<GameStates>
-{
-public:
-  PlayPhase() = default;
 
+class CreatePlayers
+  : public State<GameStates>
+{
 public:
   auto Update(GameState &gameState) -> bool override;
 
   auto Type() const -> GameStates override
-  { return GameStates::PlayPhase; }
+  { return GameStates::CreatePlayers; }
 };
 
 } // namespace Bang

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace Bang
 {
 
@@ -22,5 +24,8 @@ public:
 
   virtual auto Type() const -> StateMachineType = 0;
 };
+
+template <typename StateMachineType>
+using StatePointer = std::unique_ptr<State<StateMachineType>>;
 
 } // namespace Bang

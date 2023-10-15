@@ -2,8 +2,6 @@
 
 #include <GameStates.h>
 
-#include <State.h>
-
 namespace Bang
 {
 

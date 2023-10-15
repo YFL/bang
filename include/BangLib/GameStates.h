@@ -1,11 +1,18 @@
 #pragma once
 
+#define INCLUDE_FILE <GameStates.inc>
+#define STATE_MACHINE_NAME GameStates
+
 #include <StateEnumGenerator.h>
-  GENERATE_ENUM(GameStates)
-  #include <GameStates.inc>
-  NumberOfGameStates
-  FINISH_ENUM();
-#undef GENERATE_STATE
 
 #include <StateGenerator.h>
-  GENERATE_NEXT_STATE_FUNCTION(GameStates)
+
+namespace Bang
+{
+  
+auto GetNextState(const StatePointer<GameStates> &state, const GameState &gameState) -> StatePointer<GameStates>;
+
+} // namespace Bang
+
+#undef INCLUDE_FILE
+#undef STATE_MACHINE_NAME

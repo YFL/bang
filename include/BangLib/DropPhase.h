@@ -1,7 +1,6 @@
 #pragma once
 
 #include <GameStates.h>
-#include <State.h>
 
 namespace Bang
 {

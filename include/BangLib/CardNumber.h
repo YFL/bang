@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <unordered_map>
+
 #include <cstdint>
 
 namespace Bang
@@ -26,5 +29,7 @@ enum class CardNumber
   // CardNumbers (13 - 1 + 1).
   NumberOfCardNumbers = Ace - 1
 };
+
+auto ToString(const CardNumber cardNumber) -> std::string;
 
 } // namespace Bang
