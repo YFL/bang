@@ -27,7 +27,7 @@ auto ReadJsonFromFile(const std::string &pathToFile) -> Json::Value
 {
   std::ifstream file(pathToFile);
   if(!file.is_open())
-    throw Bang::Exception {fmt::format("File {} coudln't be opened to read json,", pathToFile)};
+    throw Bang::Exception {fmt::format("File {} couldn't be opened to read json,", pathToFile)};
   
   Json::Reader r;
   Json::Value jsonRoot;

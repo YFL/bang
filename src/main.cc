@@ -10,17 +10,21 @@
 namespace
 {
 
-constexpr auto WindowWidth = 1024u;
-constexpr auto WindowHeight = 720u;
+constexpr auto WindowWidth = 1920u;
+constexpr auto WindowHeight = 1080u;
 
-constexpr auto CardsPerWindowHorizontal = 4;
-constexpr auto CardWidth = WindowWidth / CardsPerWindowHorizontal;
-constexpr auto CardsPerWindowVertical = 4;
-constexpr auto CardHeight = WindowHeight / CardsPerWindowVertical;
+constexpr auto MaxCardsNextToEachOtherWithoutOverlapping = 8u;
+constexpr auto ScreenToCardWidthRatio = 8.5f;
+constexpr auto ScreenToCardHeightRatio = 4.f;
+constexpr auto ScreenToBottomRowHeightRatio = 36.f;
+constexpr auto CardWidth = WindowWidth / ScreenToCardWidthRatio;
+constexpr auto CardHeight = WindowHeight / ScreenToCardHeightRatio;
+constexpr auto FirstCardToScreenLeftOffset = (WindowWidth - MaxCardsNextToEachOtherWithoutOverlapping * CardWidth) / 2;
+constexpr auto BottomRowHeight = WindowHeight / ScreenToBottomRowHeightRatio;
 
 const std::vector<SDL_Rect> PlayerPositions {
-  {0, CardHeight},
-  {WindowWidth - CardWidth, CardHeight}
+  {static_cast<int32_t>(FirstCardToScreenLeftOffset), static_cast<int32_t>(WindowHeight - BottomRowHeight - CardHeight)},
+  {static_cast<int32_t>(WindowWidth - CardWidth), static_cast<int32_t>(CardHeight)}
 };
 
 constexpr auto CardBundlesDirectoryPath = "./cardBundles";
@@ -39,14 +43,19 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
     const auto &cardsInHand = player->CardsInHand();
     const auto playerTopLeft = ::PlayerPositions[playerIndex];
     std::cerr << "Player #" << playerIndex << " position: " << playerTopLeft.x << ", " << playerTopLeft.y << std::endl;
-    for(auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
+    const auto cardsInHandSize = cardsInHand.size();
+    auto positionXOffset = ::CardWidth;
+    if(cardsInHandSize > ::MaxCardsNextToEachOtherWithoutOverlapping)
+      positionXOffset = ::CardWidth * (::MaxCardsNextToEachOtherWithoutOverlapping - 1) / (cardsInHandSize - 1);
+    
+    for(auto cardIndex = 0u; cardIndex < cardsInHandSize; ++cardIndex)
     {
       std::cerr << "Drawing card #" << cardIndex <<" state." << std::endl;
       const SDL_Rect cardPosition {
-        playerTopLeft.x,
-        playerTopLeft.y + static_cast<int32_t>(cardIndex * ::CardHeight),
-        ::CardWidth,
-        ::CardHeight
+        playerTopLeft.x + static_cast<int32_t>(cardIndex * positionXOffset),
+        playerTopLeft.y,
+        static_cast<int32_t>(::CardWidth),
+        static_cast<int32_t>(::CardHeight)
       };
 
       std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
@@ -64,9 +73,9 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
 
     const SDL_Rect characterPosition {
       playerTopLeft.x,
-      playerTopLeft.y + static_cast<int32_t>(cardsInHand.size() * ::CardHeight),
-      ::CardWidth,
-      ::CardHeight
+      playerTopLeft.y - static_cast<int32_t>(::CardHeight),
+      static_cast<int32_t>(::CardWidth),
+      static_cast<int32_t>(::CardHeight)
     };
     
     std::cerr << "Character position: " << characterPosition.x << ", " << characterPosition.y << ", " << characterPosition.w << ", " << characterPosition.h << std::endl;
@@ -123,7 +132,7 @@ auto main() -> int
       std::cerr << "State manager updated." << std::endl;
 
       std::cerr << "Clearing renderer." << std::endl;
-      renderer->ClearRenderer(SDL_Color {255, 255, 255, 255});
+      renderer->ClearRenderer(SDL_Color {0, 0, 0, 255});
       std::cerr << "Renderer cleared." << std::endl;
 
       std::cerr << "Drawing the game state." << std::endl;
