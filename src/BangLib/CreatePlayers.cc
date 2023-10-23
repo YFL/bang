@@ -1,7 +1,7 @@
-#include <CreatePlayers.h>
+#include "BangLib/CreatePlayers.h"
 
-#include <GameState.h>
-#include <GenerateCharacters.h>
+#include "BangLib/GameState.h"
+#include "BangLib/GenerateCharacters.h"
 
 #include <iostream>
 

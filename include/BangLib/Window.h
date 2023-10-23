@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Renderer.h>
+#include "BangLib/Renderer.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include <string>
 

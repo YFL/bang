@@ -1,4 +1,4 @@
-#include <GameState.h>
+#include "BangLib/GameState.h"
 
 #include <numeric>
 

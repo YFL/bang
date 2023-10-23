@@ -1,7 +1,7 @@
-#include <StateManager.h>
+#include "BangLib/StateManager.h"
 
-#include <GameState.h>
-#include <GameStates.h>
+#include "BangLib/GameState.h"
+#include "BangLib/GameStates.h"
 
 namespace Bang
 {

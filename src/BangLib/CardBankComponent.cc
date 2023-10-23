@@ -1,7 +1,7 @@
-#include <CardBankComponent.h>
+#include "BangLib/CardBankComponent.h"
 
-#include <Application.h>
-#include <JsonFileUtils.h>
+#include "BangLib/Application.h"
+#include "BangLib/JsonFileUtils.h"
 
 #include <fmt/format.h>
 

@@ -1,6 +1,6 @@
-#include <DropPhase.h>
+#include "BangLib/DropPhase.h"
 
-#include <SwitchPlayers.h>
+#include "BangLib/SwitchPlayers.h"
 
 #include <iostream>
 

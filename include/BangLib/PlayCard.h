@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Card.h>
-#include <CardNumber.h>
-#include <Suit.h>
+#include "BangLib/Card.h"
+#include "BangLib/CardNumber.h"
+#include "BangLib/Suit.h"
 
 namespace Bang
 {

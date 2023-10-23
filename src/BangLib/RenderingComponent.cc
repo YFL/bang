@@ -1,4 +1,4 @@
-#include <RenderingComponent.h>
+#include "BangLib/RenderingComponent.h"
 
 namespace Bang
 {

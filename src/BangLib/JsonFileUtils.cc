@@ -1,9 +1,9 @@
-#include <JsonFileUtils.h>
+#include "BangLib/JsonFileUtils.h"
 
-#include <Application.h>
-#include <CharacterCard.h>
-#include <Exception.h>
-#include <PlayCard.h>
+#include "BangLib/Application.h"
+#include "BangLib/CharacterCard.h"
+#include "BangLib/Exception.h"
+#include "BangLib/PlayCard.h"
 
 #include <fmt/format.h>
 

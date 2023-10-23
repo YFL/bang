@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\BangLib">
+      <UniqueIdentifier>{6694db30-c598-4f83-8234-f36d8df28b0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BangLib">
+      <UniqueIdentifier>{a07f5e55-d02b-4c95-b9c8-9a8d36c9f50c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\BangLib\Application.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\Card.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\CardBankComponent.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\CardNumber.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\ContentStorageComponent.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\CreatePlayers.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\DealInitialHand.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\DrawPhase.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\DropPhase.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\GameState.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\GameStates.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\GenerateCharacters.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\CharacterCard.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\ImageUtils.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\JsonFileUtils.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\PlayCard.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\Player.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\PlayPhase.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\Renderer.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\RenderingComponent.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\SDL.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\StateManager.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\SwitchPlayers.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\TextUtils.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BangLib\Window.cc">
+      <Filter>Source Files\BangLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\main.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\BangLib\Application.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\Card.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\CardBankComponent.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\CardNumber.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\ContentStorageComponent.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\CreatePlayers.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\DealInitialHand.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\DrawPhase.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\DropPhase.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\Exception.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\GameState.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\GameStates.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\GenerateCharacters.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\CharacterCard.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\ImageUtils.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\JsonFileUtils.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\MacroUtils.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\PlayCard.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\Player.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\PlayPhase.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\Renderer.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\RenderingComponent.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\SDL.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\State.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\StateEnumGenerator.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\StateGenerator.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\StateManager.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\Suit.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\SwitchPlayers.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\TextUtils.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BangLib\Window.h">
+      <Filter>Header Files\BangLib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\BangLib\GameStates.inc">
+      <Filter>Header Files\BangLib</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

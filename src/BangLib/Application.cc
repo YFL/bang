@@ -1,4 +1,4 @@
-#include <Application.h>
+#include "BangLib/Application.h"
 
 namespace Bang
 {

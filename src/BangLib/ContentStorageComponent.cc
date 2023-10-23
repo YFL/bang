@@ -1,4 +1,4 @@
-#include <ContentStorageComponent.h>
+#include "BangLib/ContentStorageComponent.h"
 
 #include <iostream>
 

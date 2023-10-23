@@ -1,4 +1,4 @@
-#include <CharacterCard.h>
+#include "BangLib/CharacterCard.h"
 
 namespace Bang
 {

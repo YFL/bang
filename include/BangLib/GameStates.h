@@ -1,11 +1,11 @@
 #pragma once
 
-#define INCLUDE_FILE <GameStates.inc>
+#define INCLUDE_FILE <BangLib/GameStates.inc>
 #define STATE_MACHINE_NAME GameStates
 
-#include <StateEnumGenerator.h>
+#include "BangLib/StateEnumGenerator.h"
 
-#include <StateGenerator.h>
+#include "BangLib/StateGenerator.h"
 
 namespace Bang
 {

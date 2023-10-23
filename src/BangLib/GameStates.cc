@@ -1,10 +1,10 @@
-#include <GameStates.h>
+#include "BangLib/GameStates.h"
 
-#include <GenerateCharacters.h>
-#include <DealInitialHand.h>
-#include <DrawPhase.h>
-#include <PlayPhase.h>
-#include <DropPhase.h>
+#include "BangLib/GenerateCharacters.h"
+#include "BangLib/DealInitialHand.h"
+#include "BangLib/DrawPhase.h"
+#include "BangLib/PlayPhase.h"
+#include "BangLib/DropPhase.h"
 
 namespace Bang
 {

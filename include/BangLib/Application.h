@@ -1,9 +1,9 @@
 #pragma once
 
-#include <CardBankComponent.h>
-#include <ContentStorageComponent.h>
-#include <RenderingComponent.h>
-#include <SDL.h>
+#include "BangLib/CardBankComponent.h"
+#include "BangLib/ContentStorageComponent.h"
+#include "BangLib/RenderingComponent.h"
+#include "BangLib/SDL.h"
 
 #include <memory>
 

@@ -1,6 +1,6 @@
-#include <DrawPhase.h>
+#include "BangLib/DrawPhase.h"
 
-#include <PlayPhase.h>
+#include "BangLib/PlayPhase.h"
 
 #include <iostream>
 

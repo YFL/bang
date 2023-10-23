@@ -1,6 +1,6 @@
-#include <Card.h>
+#include "BangLib/Card.h"
 
-#include <Exception.h>
+#include "BangLib/Exception.h"
 
 namespace Bang
 {

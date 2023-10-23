@@ -1,8 +1,8 @@
 #ifndef _STATE_GENERATOR_H_
 #define _STATE_GENERATOR_H_
 
-#include <MacroUtils.h>
-#include <State.h>
+#include "BangLib/MacroUtils.h"
+#include "BangLib/State.h"
 
 namespace Bang
 {

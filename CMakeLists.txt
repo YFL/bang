@@ -3,7 +3,7 @@ project(Bang)
 
 file(GLOB BangLibSources src/BangLib/*.cc)
 add_library(Bang STATIC ${BangLibSources})
-target_include_directories(Bang PUBLIC "include/BangLib")
+target_include_directories(Bang PUBLIC "include/")
 target_include_directories(Bang PUBLIC "../jsoncpp/include")
 target_include_directories(Bang PUBLIC "../fmt/include")
 set_property(TARGET Bang PROPERTY CXX_STANDARD 17)

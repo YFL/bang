@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Exception.h>
-#include <GameStates.h>
+#include "BangLib/Exception.h"
+#include "BangLib/GameStates.h"
 
 #include <iostream>
 #include <memory>

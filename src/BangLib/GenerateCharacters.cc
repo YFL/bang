@@ -1,9 +1,9 @@
-#include <GenerateCharacters.h>
+#include "BangLib/GenerateCharacters.h"
 
-#include <Application.h>
-#include <DealInitialHand.h>
-#include <Exception.h>
-#include <GameState.h>
+#include "BangLib/Application.h"
+#include "BangLib/DealInitialHand.h"
+#include "BangLib/Exception.h"
+#include "BangLib/GameState.h"
 
 #include <iostream>
 

@@ -1,6 +1,6 @@
-#include <PlayPhase.h>
+#include "BangLib/PlayPhase.h"
 
-#include <DropPhase.h>
+#include "BangLib/DropPhase.h"
 
 #include <iostream>
 

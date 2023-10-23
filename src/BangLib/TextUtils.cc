@@ -1,4 +1,4 @@
-#include <TextUtils.h>
+#include "BangLib/TextUtils.h"
 
 namespace Bang
 {

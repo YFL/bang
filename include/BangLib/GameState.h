@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Player.h>
+#include "BangLib/Player.h"
 
 namespace Bang
 {

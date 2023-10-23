@@ -1,10 +1,10 @@
-#include <DealInitialHand.h>
+#include "BangLib/DealInitialHand.h"
 
-#include <Application.h>
-#include <Exception.h>
-#include <GameState.h>
-#include <PlayCard.h>
-#include <PlayPhase.h>
+#include "BangLib/Application.h"
+#include "BangLib/Exception.h"
+#include "BangLib/GameState.h"
+#include "BangLib/PlayCard.h"
+#include "BangLib/PlayPhase.h"
 
 #include <iostream>
 

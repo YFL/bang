@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Card.h>
+#include "BangLib/Card.h"
 
 namespace Bang
 {

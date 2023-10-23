@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GameStates.h>
+#include "BangLib/GameStates.h"
 
 namespace Bang
 {

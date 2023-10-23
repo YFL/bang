@@ -1,6 +1,6 @@
-#include <Window.h>
+#include "BangLib/Window.h"
 
-#include <Exception.h>
+#include "BangLib/Exception.h"
 
 #include <memory>
 #include <string>

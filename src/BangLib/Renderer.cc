@@ -1,8 +1,8 @@
-#include <Renderer.h>
+#include "BangLib/Renderer.h"
 
-#include <Exception.h>
-#include <ImageUtils.h>
-#include <TextUtils.h>
+#include "BangLib/Exception.h"
+#include "BangLib/ImageUtils.h"
+#include "BangLib/TextUtils.h"
 
 namespace Bang
 {

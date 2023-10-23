@@ -1,6 +1,6 @@
-#include <SwitchPlayers.h>
+#include "BangLib/SwitchPlayers.h"
 
-#include <DrawPhase.h>
+#include "BangLib/DrawPhase.h"
 
 #include <iostream>
 
