@@ -5,6 +5,8 @@
 #include <BangLib/StateManager.h>
 #include <BangLib/TextUtils.h>
 
+#include <GraphicsLib/Screen.h>
+
 #include <iostream>
 
 namespace
@@ -33,6 +35,7 @@ constexpr auto CardBundlesDirectoryPath = "./cardBundles";
 
 auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::GameState &gameState) -> void
 {
+  Graphics::Screen mainGameScreen {WindowWidth, WindowHeight};
   for(auto playerIndex = 0u; playerIndex < gameState.players.size(); ++playerIndex)
   {
     std::cerr << "Drawing player #" << playerIndex << " state." << std::endl;
@@ -40,13 +43,9 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
     if(!player)
       throw Bang::Exception {"Null player found when drawing the game state." };
     
-    const auto &cardsInHand = player->CardsInHand();
+
     const auto playerTopLeft = ::PlayerPositions[playerIndex];
     std::cerr << "Player #" << playerIndex << " position: " << playerTopLeft.x << ", " << playerTopLeft.y << std::endl;
-    const auto cardsInHandSize = cardsInHand.size();
-    auto positionXOffset = ::CardWidth;
-    if(cardsInHandSize > ::MaxCardsNextToEachOtherWithoutOverlapping)
-      positionXOffset = ::CardWidth * (::MaxCardsNextToEachOtherWithoutOverlapping - 1) / (cardsInHandSize - 1);
     
     for(auto cardIndex = 0u; cardIndex < cardsInHandSize; ++cardIndex)
     {
