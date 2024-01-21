@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Bang
+namespace Utils
 {
 
 /*!
@@ -25,4 +25,4 @@ private:
   const std::string _message;
 };
 
-} // namespace Bang
+} // namespace Utils

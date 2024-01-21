@@ -89,7 +89,7 @@ auto QuadMapNode::Add(Positionable *element) -> void
   // quarters == 0 should mean, that:
   // a) the element is outside of the draw area of this (no collision),
   // c) the element won't fit into any of the child nodes,
-  // b) there aren't any child nodes.
+  // b) there aren't any child nodes (this is a leaf).
   if (!quarters)
   {
     _childElements.push_back(element);
@@ -103,7 +103,18 @@ auto QuadMapNode::Add(Positionable *element) -> void
 
 auto QuadMapNode::Remove(Positionable *element) -> void
 {
+  for (auto it = _childElements.begin(); it != _childElements.end(); ++it)
+  {
+    if (**it == *element)
+    {
+      _childElements.erase(it);
+      return;
+    }
+  }
 
+  for (auto &childNode : _childNodes)
+    if (DoesDrawAreaFitAnother(element->GetAbsoluteDrawArea(), childNode._drawArea))
+      childNode.Remove(element);
 }
 
 auto QuadMapNode::GetQuarters(Positionable const *element) const -> int32_t
@@ -114,7 +125,7 @@ auto QuadMapNode::GetQuarters(Positionable const *element) const -> int32_t
 
   auto quarters = 0;
   for (auto i = 0; i < ChildNodeCount && i < _childNodes.size(); ++i)
-    if (DoesDrawAreaFitAnother(elementDrawArea, _childNodes[i]._drawArea))
+    if (DoDrawAreasCollide(elementDrawArea, _childNodes[i]._drawArea))
       quarters |= ::Quarters.at(i);
 
   return quarters;

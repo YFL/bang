@@ -6,6 +6,16 @@
 
 #include <string>
 
+namespace
+{
+
+constexpr auto DefaultWindowFlags =
+  SDL_WINDOW_OPENGL
+  | SDL_WINDOW_BORDERLESS
+  | SDL_WINDOW_FULLSCREEN;
+
+} // namespace 
+
 namespace Bang
 {
 
@@ -13,12 +23,12 @@ class Window
 {
 public:
   Window(
-    const uint32_t windowWidth
-    , const uint32_t windowHeight
-    , const std::string &title = ""
-    , const int32_t positionX = SDL_WINDOWPOS_CENTERED
-    , const int32_t positionY = SDL_WINDOWPOS_CENTERED
-    , const SDL_WindowFlags flags = static_cast<SDL_WindowFlags>(SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN));
+    const uint32_t windowWidth,
+    const uint32_t windowHeight,
+    const std::string &title = "",
+    const int32_t positionX = SDL_WINDOWPOS_CENTERED,
+    const int32_t positionY = SDL_WINDOWPOS_CENTERED,
+    const SDL_WindowFlags flags = static_cast<SDL_WindowFlags>(::DefaultWindowFlags));
   ~Window() = default;
   Window(const Window &) = delete;
   Window(Window &&) = delete;

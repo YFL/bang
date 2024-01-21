@@ -11,7 +11,11 @@ class CharacterCard
   : public Card
 {
 public:
-  CharacterCard(const std::string &name, const std::string &descrioption, SDL_Texture *texture, const uint32_t maxLives);
+  CharacterCard(
+    const std::string &name,
+    const std::string &descrioption,
+    SDL_Texture *texture,
+    const uint32_t maxLives);
 
 public:
   auto Description() const -> const std::string &

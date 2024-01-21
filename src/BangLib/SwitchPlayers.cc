@@ -14,7 +14,10 @@ auto SwitchPlayers::Update(GameState &gameState) -> bool
 }
 
 template<>
-auto GetNextState<GameStates, GameStates::SwitchPlayers>(const StatePointer<GameStates> &currentState, const GameState &gameState) -> StatePointer<GameStates>
+auto GetNextState<GameStates, GameStates::SwitchPlayers>(
+  const StatePointer<GameStates> &currentState,
+  const GameState &gameState)
+  -> StatePointer<GameStates>
 {
   return StatePointer<GameStates> {new DrawPhase};
 }

@@ -16,7 +16,7 @@ public:
   StateManager(std::unique_ptr<StateType> &&initialState)
   {
     if(!initialState)
-      throw Exception {"Couldn't initialize StateManager with null initial state"};
+      throw Utils::Exception {"Couldn't initialize StateManager with null initial state"};
     
     _state = std::move(initialState);
   }

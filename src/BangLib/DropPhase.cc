@@ -14,7 +14,10 @@ auto DropPhase::Update(GameState &gameState) -> bool
 }
 
 template<>
-auto GetNextState<GameStates, GameStates::DropPhase>(const StatePointer<GameStates> &currentState, const GameState& gameState) -> StatePointer<GameStates>
+auto GetNextState<GameStates, GameStates::DropPhase>(
+  const StatePointer<GameStates> &currentState,
+  const GameState& gameState)
+  -> StatePointer<GameStates>
 {
   return StatePointer<GameStates> {new SwitchPlayers};
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DrawArea.h>
+#include <IdFul.h>
 
 #include <algorithm>
 #include <map>
@@ -9,61 +10,60 @@
 namespace Graphics
 {
 
-class Positionable
+class Positionable : public Utils::IdFul
 {
 public:
   Positionable(Positionable *parent, const DrawArea &drawArea)
-    : _parent {parent}
+    : IdFul {}
+    , _parent {parent}
     , _drawArea {drawArea}
-  { if(parent) parent->AddChild(this); }
+  { if (parent) parent->AddChild(this); }
 
   Positionable(const Positionable &) = delete;
   Positionable(Positionable &&move);
 
   virtual ~Positionable()
-  { if(_parent) _parent->RemoveChild(this); }
+  { if (_parent) _parent->RemoveChild(this); }
 
 public:
   auto operator=(const Positionable &) -> Positionable & = delete;
   auto operator=(Positionable &&move) -> Positionable &;
+  auto operator==(const Positionable &other) const -> bool;
 
 public:
   auto GetDrawArea() const -> DrawArea
   { return _drawArea; }
 
   auto GetAbsoluteDrawArea() const -> DrawArea
-  { return _parent->GetAbsoluteDrawArea() + _drawArea; }
-
-  auto GetChildren() const -> const PositionableMap &
-  { return _children; }
+  { return _parent ? _parent->GetAbsoluteDrawArea() + _drawArea : _drawArea; }
 
   auto GetParent() const -> Positionable *
   { return _parent; }
 
-  auto GetChildCount() const -> uint32_t
-  { return _childCount; }
-
   auto SetParent(Positionable *parent) -> void;
-
-  auto SetPosition(const Position &position) -> void
-  { _drawArea.position = position; }
-
+  auto SetPosition(const Position &position) -> void;
   virtual auto AddChild(Positionable *child) -> void;
-
-  auto RemoveChild(Positionable const *child) -> void;
+  auto RemoveChild(Positionable *child) -> void;
 
 protected:
-  auto ChildAdded(Positionable *child) -> void {}
+  // TODO: Instead of this bullshit have a proper ECS (EntityComponentSystem. Luv ya :* )
+  virtual auto AddChildTo(Positionable *child, Positionable *parent) -> void
+  { if (_parent) _parent->AddChildTo(child, parent); }
+
+  virtual auto RemoveChildFrom(Positionable *child, Positionable *parent) -> void
+  { if (_parent) _parent->RemoveChildFrom(child, parent); }
+  
+  virtual auto SetPositionOf(
+    Positionable *child,
+    const Position &oldPosition,
+    const Position &newPosition)
+    -> void
+  { if (_parent) _parent->SetPositionOf(child, oldPosition, newPosition); }
 
 protected:
   Positionable *_parent = nullptr;
   //! Draw area's position is relative to parent
   DrawArea _drawArea = {};
-  PositionableMap _children = {};
-  uint32_t _childCount = 0u;
 };
-
-using PositionableMap =
-  std::map<int32_t, std::map<int32_t, std::vector<Positionable *>>>;
 
 } // namespace Graphics

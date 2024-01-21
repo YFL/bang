@@ -27,12 +27,12 @@ auto ReadJsonFromFile(const std::string &pathToFile) -> Json::Value
 {
   std::ifstream file(pathToFile);
   if(!file.is_open())
-    throw Bang::Exception {fmt::format("File {} couldn't be opened to read json,", pathToFile)};
+    throw Utils::Exception {fmt::format("File {} couldn't be opened to read json,", pathToFile)};
   
   Json::Reader r;
   Json::Value jsonRoot;
   if(!r.parse(file, jsonRoot, false))
-    throw Bang::Exception {fmt::format("File {} didn't contain valid json.", pathToFile)};
+    throw Utils::Exception {fmt::format("File {} didn't contain valid json.", pathToFile)};
 
   return jsonRoot;
 }
@@ -44,19 +44,19 @@ auto JsonToCardPointer(const Json::Value &jsonObject) -> Bang::CardPointer
 
   const auto &nameJson = jsonObject[::NameKey];
   if(!nameJson.isString())
-    throw Bang::Exception {format(NameKey)};
+    throw Utils::Exception {format(NameKey)};
   
   const auto &descriptionJson = jsonObject[::descriptionKey];
   if(!descriptionJson.isString())
-    throw Bang::Exception {format(descriptionKey)};
+    throw Utils::Exception {format(descriptionKey)};
 
   const auto &piecesInDeckJson = jsonObject[PiecesInDeckKey];
   if(!piecesInDeckJson.isInt())
-    throw Bang::Exception {format(PiecesInDeckKey)};
+    throw Utils::Exception {format(PiecesInDeckKey)};
 
   const auto &textureNameJson = jsonObject[::TextureNameKey];
   if(!textureNameJson.isString())
-    throw Bang::Exception(format(TextureNameKey));
+    throw Utils::Exception(format(TextureNameKey));
 
   const auto &numberOfLifesJson = jsonObject[::numberOfLifesKey];
   if(numberOfLifesJson.isInt())
@@ -93,14 +93,18 @@ auto LoadFromFile(const std::string &pathToFile) -> CardPointerVector
 {
   const auto jsonRoot = ::ReadJsonFromFile(pathToFile);
   if(!jsonRoot.isArray())
-    throw Exception {fmt::format("File \"{}\" didn't contain an array as it's root element.", pathToFile)};
+    throw Utils::Exception {
+      fmt::format("File \"{}\" didn't contain an array as it's root element.", pathToFile)};
 
   CardPointerVector readCards;
   for(const auto &object : jsonRoot)
   {
     if(!object.isObject())
     {
-      std::cerr << fmt::format("Non object found in root of \"{}\" file. Skipping...", pathToFile) << std::endl;
+      std::cerr
+        << fmt::format("Non object found in root of \"{}\" file. Skipping...", pathToFile)
+        << std::endl;
+      
       continue;
     }
 
@@ -108,9 +112,11 @@ auto LoadFromFile(const std::string &pathToFile) -> CardPointerVector
     {
       readCards.emplace_back(JsonToCardPointer(object));
     }
-    catch(const Exception &e)
+    catch(const Utils::Exception &e)
     {
-      std::cerr << fmt::format("Erroneous card descriptor found: {}. Skipping... ", e.Message()) << std::endl;
+      std::cerr
+        << fmt::format("Erroneous card descriptor found: {}. Skipping... ", e.Message())
+        << std::endl;
     }
   }
 

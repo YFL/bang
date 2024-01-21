@@ -10,7 +10,11 @@ namespace Bang
 class PlayCard : public Card
 {
 public:
-  PlayCard(const std::string &name, SDL_Texture *texture, const Bang::CardNumber cardNumber, const Suit suit);
+  PlayCard(
+    const std::string &name,
+    SDL_Texture *texture,
+    const Bang::CardNumber cardNumber,
+    const Suit suit);
 
 public:
   auto CardNumber() const -> Bang::CardNumber

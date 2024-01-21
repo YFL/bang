@@ -1,10 +1,11 @@
 #include <Positionable.h>
 
+#include <Exception.h>
+
 #include <cassert>
 
 namespace Graphics
 {
-
 
 Positionable::Positionable(Positionable &&move)
 {
@@ -13,43 +14,31 @@ Positionable::Positionable(Positionable &&move)
 
 auto Positionable::operator=(Positionable &&move) -> Positionable &
 {
+  move._parent->RemoveChild(&move);
   _parent = std::move(move._parent);
   move._parent = nullptr;
   _drawArea = std::move(move._drawArea);
-  _children = std::move(move._children);
-  _childCount = std::move(move._childCount);
-  move._childCount = 0;
+  _parent->AddChild(this);
 
   return *this;
 }
 
-auto Positionable::AddChild(Positionable *child) -> void
+auto Positionable::operator==(const Positionable &other) const -> bool
 {
-  _children[child->_drawArea.position.x][child->_drawArea.position.y].emplace_back(child);
-  _childCount++;
+  return id == other.id
+    && GetAbsoluteDrawArea() == other.GetAbsoluteDrawArea();
 }
 
-auto Positionable::RemoveChild(Positionable const *child) -> void
+auto Positionable::AddChild(Positionable *child) -> void
 {
-  const auto &yMap = _children.find(child->_drawArea.position.x);
-  if(yMap == _children.end())
-    return;
+  if(_parent)
+    _parent->AddChildTo(child, this);
+}
 
-  const auto &positionableVectorIt = yMap->second.find(child->_drawArea.position.y);
-  if(positionableVectorIt == yMap->second.end())
-    return;
-
-  const auto &newEnd = std::remove(
-    std::cbegin(positionableVectorIt->second)
-    , std::cend(positionableVectorIt->second)
-    , child);
-  if(newEnd == std::cend(positionableVectorIt->second))
-    return;
-  
-  const auto removedCount = std::distance(newEnd, std::cend(positionableVectorIt->second));
-  assert(removedCount == 1);
-  positionableVectorIt->second.erase(newEnd, std::cend(positionableVectorIt->second));
-  _childCount -= removedCount;
+auto Positionable::RemoveChild(Positionable *child) -> void
+{
+  if(_parent)
+    _parent->RemoveChildFrom(child, this);
 }
 
 auto Positionable::SetParent(Positionable *parent) -> void
@@ -62,6 +51,14 @@ auto Positionable::SetParent(Positionable *parent) -> void
 
   _parent = parent;
   _parent->AddChild(this);
+}
+
+auto Positionable::SetPosition(const Position &position) -> void
+{
+  const auto oldPosition = GetAbsoluteDrawArea().position;
+  _drawArea.position = position;
+  if(_parent)
+    _parent->SetPositionOf(this, oldPosition, GetAbsoluteDrawArea().position);
 }
 
 } // namespace Graphics

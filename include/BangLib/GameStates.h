@@ -10,7 +10,8 @@
 namespace Bang
 {
   
-auto GetNextState(const StatePointer<GameStates> &state, const GameState &gameState) -> StatePointer<GameStates>;
+auto GetNextState(const StatePointer<GameStates> &state, const GameState &gameState)
+  -> StatePointer<GameStates>;
 
 } // namespace Bang
 

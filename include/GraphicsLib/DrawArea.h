@@ -27,6 +27,9 @@ struct DrawArea
 inline auto operator+ (const DrawArea &a, const DrawArea &b) -> DrawArea
 { return {a.position.x + b.position.x, a.position.y + b.position.y, b.w, b.h}; }
 
+inline auto operator== (const DrawArea &a, const DrawArea &b) -> bool
+{ return a.position == b.position && a.w == b.w && a.h == b.h; }
+
 inline auto DoDrawAreasCollide(const DrawArea &a, const DrawArea &b, bool includeZ = false) -> bool;
 
 inline auto DoesDrawAreaFitAnother(const DrawArea &fits, const DrawArea &toFit) -> bool;
@@ -37,6 +40,7 @@ inline auto DoesDrawAreaFitAnother(const DrawArea &fits, const DrawArea &toFit) 
 inline auto IsPointInDrawArea(
   const DrawArea &area,
   const Position &point,
-  bool includeZ = false) -> bool;
+  bool includeZ = false)
+  -> bool;
 
 } // namespace Graphics

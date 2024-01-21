@@ -16,28 +16,29 @@ namespace
 constexpr auto characterCardsName = "characterCards.json";
 constexpr auto playCardsName = "playCards.json";
 
-auto LoadCardBundle(const std::filesystem::path &bundlePath) -> std::pair<Bang::CardPointerVector, Bang::CardPointerVector>
+auto LoadCardBundle(const std::filesystem::path &bundlePath)
+  -> std::pair<Bang::CardPointerVector, Bang::CardPointerVector>
 {
   std::cout << fmt::format("Loading card bundle {}", bundlePath.c_str()) << std::endl;
   const auto characterFilePath = bundlePath / characterCardsName;
-  std::cout <<
-    fmt::format(
+  std::cout
+    << fmt::format(
       "Character file path: {} exists: {}",
       characterFilePath.c_str(),
-      std::filesystem::exists(characterFilePath)) <<
-    std::endl;
+      std::filesystem::exists(characterFilePath))
+    << std::endl;
 
   const auto characterCardsCurrent = std::filesystem::exists(characterFilePath)
     ? Bang::LoadFromFile(characterFilePath)
     : Bang::CardPointerVector {};
 
   const auto playCardFilePath = bundlePath / playCardsName;
-  std::cout <<
-    fmt::format(
+  std::cout
+    << fmt::format(
       "Character file path: {} exists: {}",
       playCardFilePath.c_str(),
-      std::filesystem::exists(playCardFilePath)) <<
-    std::endl;
+      std::filesystem::exists(playCardFilePath))
+    << std::endl;
 
   const auto playCardsCurrent = std::filesystem::exists(playCardFilePath)
     ? Bang::LoadFromFile(playCardFilePath)
@@ -64,9 +65,16 @@ auto LoadTexturesForBundle(const std::filesystem::path &bundlePath) -> void
     auto &renderer = window->renderer;
     std::cout << "Renderer: " << renderer.get() << std::endl;
     
-    auto *texture = Bang::Application::Get().renderingComponent->window->renderer->LoadImageFromJpg(fileEntry.path());
-    std::cout << fmt::format("Storing texture with name: {}", fileEntry.path().stem().c_str()) << std::endl;
-    Bang::Application::Get().contentStorageComponent->AddTexture(fileEntry.path().stem().c_str(), texture);
+    auto *texture = Bang::Application::Get().renderingComponent->window->renderer->LoadImageFromJpg(
+      fileEntry.path());
+    
+    std::cout
+      << fmt::format("Storing texture with name: {}", fileEntry.path().stem().c_str())
+      << std::endl;
+    
+    Bang::Application::Get().contentStorageComponent->AddTexture(
+      fileEntry.path().stem().c_str(),
+      texture);
   }
 }
 
@@ -77,8 +85,9 @@ namespace Bang
 
 auto CardBankComponent::LoadAllBanks(const std::string &bankDirectoryPath) -> void
 {
+  const std::filesystem::path path(bankDirectoryPath);
   // Load card information from all bundles
-  for (auto &bundlePath : std::filesystem::directory_iterator(std::filesystem::path {bankDirectoryPath}))
+  for (auto &bundlePath : std::filesystem::directory_iterator(path))
   {
     if(!bundlePath.is_directory())
       continue;

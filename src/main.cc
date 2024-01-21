@@ -41,7 +41,7 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
     std::cerr << "Drawing player #" << playerIndex << " state." << std::endl;
     const auto &player = gameState.players[playerIndex];
     if(!player)
-      throw Bang::Exception {"Null player found when drawing the game state." };
+      throw Utils::Exception {"Null player found when drawing the game state." };
     
 
     const auto playerTopLeft = ::PlayerPositions[playerIndex];
@@ -90,7 +90,9 @@ auto main() -> int
     auto &application = Bang::Application::Get();
     auto &window = application.renderingComponent->window;
     std::cout << "Creating window." << std::endl;
-    window = std::unique_ptr<Bang::Window> {new Bang::Window {::WindowWidth, ::WindowHeight, "Bang"}};
+    window = std::unique_ptr<Bang::Window> {
+      new Bang::Window {::WindowWidth, ::WindowHeight, "Bang"}};
+
     auto &renderer = window->renderer;
 
     // Loading the card banks requires a renderer.
@@ -101,13 +103,15 @@ auto main() -> int
     std::cout << "Loading font." << std::endl;
     auto *font = Bang::LoadFontFromFile(fontName, 180u);
     if(!font)
-      throw Bang::Exception {""};
+      throw Utils::Exception {""};
 
     std::cout << "Adding font to content storage: " << fontName << " " << font << std::endl;
     application.contentStorageComponent->AddFont(fontName, font);
     
-    std::cerr << "Creating state manager with CreatePlayers initial state." << std::endl;
-    Bang::StateManager<Bang::State<GameStates>> stateManager {std::unique_ptr<Bang::State<GameStates>> {new Bang::CreatePlayers}};
+    std::cout << "Creating state manager with CreatePlayers initial state." << std::endl;
+    Bang::StateManager<Bang::State<GameStates>> stateManager {
+      std::unique_ptr<Bang::State<GameStates>> {new Bang::CreatePlayers}};
+      
     Bang::GameState gameState;
 
     SDL_Event event;
@@ -143,7 +147,7 @@ auto main() -> int
       std::cerr << "Presenting finished." << std::endl;
     }
   }
-  catch(const Bang::Exception &e)
+  catch(const Utils::Exception &e)
   {
     std::cerr << e.Message() << std::endl;
     return -1;

@@ -14,7 +14,7 @@ auto GenerateCharacterForPlayer(const Bang::PlayerPointer &player) -> void
 {
   const auto &renderer = Bang::Application::Get().renderingComponent->window->renderer;
   if(!renderer)
-    throw Bang::Exception {"Renderer not available when generating a character to a player."};
+    throw Utils::Exception {"Renderer not available when generating a character to a player."};
 
   const auto &characterCards = Bang::Application::Get().cardBankComponent->characterCards;
   std::cout << "characterCards number: " << characterCards.size() << std::endl;
@@ -43,7 +43,10 @@ auto GenerateCharacters::Update(GameState &gameState) -> bool
 }
 
 template<>
-auto GetNextState<GameStates, GameStates::GenerateCharacters>(const StatePointer<GameStates> &currentState, const GameState &gameState) -> StatePointer<GameStates>
+auto GetNextState<GameStates, GameStates::GenerateCharacters>(
+  const StatePointer<GameStates> &currentState,
+  const GameState &gameState)
+  -> StatePointer<GameStates>
 {
   return StatePointer<GameStates> {new DealInitialHand};
 }

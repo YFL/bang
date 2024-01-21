@@ -15,17 +15,17 @@ SDL::SDL()
 {
   if(SDL_Init(SDL_INIT_EVERYTHING))
   {
-    throw Exception {std::string("Couldn't initialize SDL2: ") + SDL_GetError()};
+    throw Utils::Exception {std::string("Couldn't initialize SDL2: ") + SDL_GetError()};
   }
 
   if(IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG)
   {
-    throw Exception {std::string("Couldn't initialize SDL2 image: ") + IMG_GetError()};
+    throw Utils::Exception {std::string("Couldn't initialize SDL2 image: ") + IMG_GetError()};
   }
 
   if(TTF_Init() == -1)
   {
-    throw Exception {std::string("Couldn't initialize SDL2 ttf: ") + TTF_GetError()};
+    throw Utils::Exception {std::string("Couldn't initialize SDL2 ttf: ") + TTF_GetError()};
   }
 }
 

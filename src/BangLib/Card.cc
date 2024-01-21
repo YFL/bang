@@ -10,10 +10,10 @@ Card::Card(const std::string &name, SDL_Texture *texture)
   , _texture {texture}
 {
   if(!texture)
-    throw Exception {"Invalid texture"};
+    throw Utils::Exception {"Invalid texture"};
   
   if(name.empty())
-    throw Exception {"Invalid name"};
+    throw Utils::Exception {"Invalid name"};
 }
 
 } // namespace Bang

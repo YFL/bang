@@ -9,7 +9,8 @@ namespace Bang
 
 class GameState;
 template <typename StateMachinType, StateMachinType enumValue>
-auto GetNextState(const StatePointer<StateMachinType> &state, const GameState &gameState) -> StatePointer<StateMachinType>
+auto GetNextState(const StatePointer<StateMachinType> &state, const GameState &gameState)
+  -> StatePointer<StateMachinType>
 {}
 
 } // namespace Bang
@@ -23,7 +24,8 @@ auto GetNextState(const StatePointer<StateMachinType> &state, const GameState &g
   template <>\
   auto GetNextState<stateMachineName, DOUBLE_COLON_CONCAT_HELPER(stateMachineName, stateName)>(\
     const StatePointer<stateMachineName> &state,\
-    const GameState &gameState) -> StatePointer<stateMachineName>;\
+    const GameState &gameState)\
+    -> StatePointer<stateMachineName>;\
   \
   } // namespace Bang\
   \
