@@ -31,14 +31,18 @@ auto Positionable::operator==(const Positionable &other) const -> bool
 
 auto Positionable::AddChild(Positionable *child) -> void
 {
-  if(_parent)
-    _parent->AddChildTo(child, this);
+  _children.push_back(child);
 }
 
 auto Positionable::RemoveChild(Positionable *child) -> void
 {
-  if(_parent)
-    _parent->RemoveChildFrom(child, this);
+  const auto &it = std::remove_if(_children.begin(), _children.end(), [child](Positionable *item)
+  {
+    return child->id == item->id;
+  });
+
+  if(it != _children.end())
+    _children.erase(it, _children.end());
 }
 
 auto Positionable::SetParent(Positionable *parent) -> void
@@ -55,10 +59,7 @@ auto Positionable::SetParent(Positionable *parent) -> void
 
 auto Positionable::SetPosition(const Position &position) -> void
 {
-  const auto oldPosition = GetAbsoluteDrawArea().position;
   _drawArea.position = position;
-  if(_parent)
-    _parent->SetPositionOf(this, oldPosition, GetAbsoluteDrawArea().position);
 }
 
 } // namespace Graphics

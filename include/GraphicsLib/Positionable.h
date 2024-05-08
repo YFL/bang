@@ -1,6 +1,8 @@
 #pragma once
 
 #include <DrawArea.h>
+
+#include <EventHandler.h>
 #include <IdFul.h>
 
 #include <algorithm>
@@ -10,7 +12,7 @@
 namespace Graphics
 {
 
-class Positionable : public Utils::IdFul
+class Positionable : public Utils::IdFul, public Bang::IEventHandler<std::function<void()>
 {
 public:
   Positionable(Positionable *parent, const DrawArea &drawArea)
@@ -46,22 +48,8 @@ public:
   auto RemoveChild(Positionable *child) -> void;
 
 protected:
-  // TODO: Instead of this bullshit have a proper ECS (EntityComponentSystem. Luv ya :* )
-  virtual auto AddChildTo(Positionable *child, Positionable *parent) -> void
-  { if (_parent) _parent->AddChildTo(child, parent); }
-
-  virtual auto RemoveChildFrom(Positionable *child, Positionable *parent) -> void
-  { if (_parent) _parent->RemoveChildFrom(child, parent); }
-  
-  virtual auto SetPositionOf(
-    Positionable *child,
-    const Position &oldPosition,
-    const Position &newPosition)
-    -> void
-  { if (_parent) _parent->SetPositionOf(child, oldPosition, newPosition); }
-
-protected:
   Positionable *_parent = nullptr;
+  std::vector<Positionable *> _children = {};
   //! Draw area's position is relative to parent
   DrawArea _drawArea = {};
 };
