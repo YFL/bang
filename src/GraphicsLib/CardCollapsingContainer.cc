@@ -1,33 +1,36 @@
 #include <CardCollapsingContainer.h>
+#include <ranges>
 
 namespace Graphics
 {
 
-auto CardCollapsingContainer::AddChild(Positionable *child) -> void
+auto CardCollapsingContainer::AddCard(Positionable *child) -> void
 {
+  AddChild(child);
   // The algorithm below works only for cards of the same width.
-  /*child->SetPosition({(_children.end() - 1)->first, 0});
-  Positionable::AddChild(child);
   const auto childWidth = child->GetDrawArea().w;
-  auto positionXOffset = childWidth;
+  // Move new card to the right next to the rightmost card - without any overlapping (basic case).
+  child->SetPosition({static_cast<int32_t>((_children.size() - 1) * childWidth), 0});
+  
   const auto maxCardsNextToEachOtherWithoutOverlapping = _drawArea.w / childWidth;
-  if(_childCount > maxCardsNextToEachOtherWithoutOverlapping)
-    positionXOffset =
-      childWidth * (maxCardsNextToEachOtherWithoutOverlapping - 1) / (_childCount - 1);
-
-  auto cardIndex = 0;
-  for(auto &[x, yMap] : _children)
+  if (_children.size() > maxCardsNextToEachOtherWithoutOverlapping)
   {
-    for(auto &[y, zVector] : yMap)
-    {
-      for(auto &card : zVector)
-      {
-        card->SetPosition({cardIndex * positionXOffset, 0});
-      }
-    }
+    // Overflow handling
+    // When there are more cards in the container than it can position next to each other without
+    // overlapping, we calculate the offset between the cards based on the with of the container
+    // and the number of stored cards.
+    const auto verticalOffsetBetweenCards = _drawArea.w / _children.size();
+    /*auto positionXOffset = 
+      childWidth * (maxCardsNextToEachOtherWithoutOverlapping - 1) / (_children.size() - 1);*/
 
-    ++cardIndex;
-  }*/
+    auto cardIndex = 0;
+    std::ranges::for_each(
+      _children,
+      [&cardIndex, /*positionXOffset, */verticalOffsetBetweenCards](Positionable* card)
+      {
+        card->SetPosition({ cardIndex++ * static_cast<int32_t>(verticalOffsetBetweenCards), 0 });
+      });
+  }
 }
 
 } // namespace Graphics

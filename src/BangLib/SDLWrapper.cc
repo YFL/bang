@@ -2,6 +2,8 @@
 
 #include <Exception.h>
 
+#define SDL_MAIN_HANDLED
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -13,6 +15,7 @@ namespace Bang
 
 SDL::SDL()
 {
+  SDL_SetMainReady();
   if(SDL_Init(SDL_INIT_EVERYTHING))
   {
     throw Utils::Exception {std::string("Couldn't initialize SDL2: ") + SDL_GetError()};

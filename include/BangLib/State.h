@@ -1,11 +1,11 @@
 #pragma once
 
+#include <GameState.h>
+
 #include <memory>
 
 namespace Bang
 {
-
-class GameState;
 
 template <typename StateMachineType>
 class State

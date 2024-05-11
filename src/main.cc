@@ -5,6 +5,8 @@
 #include <BangLib/StateManager.h>
 #include <BangLib/TextUtils.h>
 
+#include <GraphicsLib/CardCollapsingContainer.h>
+#include <GraphicsLib/Positionable.h>
 #include <GraphicsLib/Screen.h>
 
 #include <iostream>
@@ -43,20 +45,23 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
     if(!player)
       throw Utils::Exception {"Null player found when drawing the game state." };
     
+    const auto &cardsInHand = player->CardsInHand();
+    const auto& playerPosition = ::PlayerPositions[playerIndex];
 
-    const auto playerTopLeft = ::PlayerPositions[playerIndex];
-    std::cerr << "Player #" << playerIndex << " position: " << playerTopLeft.x << ", " << playerTopLeft.y << std::endl;
+    Graphics::CardCollapsingContainer cardCollapsingContainer {
+      &mainGameScreen,
+      Graphics::DrawArea {
+        {playerPosition.x, playerPosition.y},
+        static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping* ::CardWidth),
+        static_cast<int32_t>(::CardHeight)}};
+
+    std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
     
-    for(auto cardIndex = 0u; cardIndex < cardsInHandSize; ++cardIndex)
+    std::vector<Graphics::Positionable> positionables;
+    for(auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
     {
-      std::cerr << "Drawing card #" << cardIndex <<" state." << std::endl;
-      const SDL_Rect cardPosition {
-        playerTopLeft.x + static_cast<int32_t>(cardIndex * positionXOffset),
-        playerTopLeft.y,
-        static_cast<int32_t>(::CardWidth),
-        static_cast<int32_t>(::CardHeight)
-      };
-
+      positionables.emplace_back(&cardCollapsingContainer, Graphics::DrawArea {{}, static_cast<uint32_t>(::CardWidth), static_cast<uint32_t>(::CardHeight)});
+      const auto& cardPosition = DrawAreaToSDLRect(positionables.back().GetDrawArea());
       std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
       renderer->RenderTexture(cardsInHand[cardIndex]->Texture(), nullptr, &cardPosition);
       std::cerr << " Card #" << cardIndex << " drawn." << std::endl;
@@ -71,8 +76,8 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
     }
 
     const SDL_Rect characterPosition {
-      playerTopLeft.x,
-      playerTopLeft.y - static_cast<int32_t>(::CardHeight),
+      playerPosition.x,
+      playerPosition.y - static_cast<int32_t>(::CardHeight),
       static_cast<int32_t>(::CardWidth),
       static_cast<int32_t>(::CardHeight)
     };
@@ -82,6 +87,7 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
     std::cerr << "Drawing player #" << playerIndex << "'s character finished." << std::endl;
   }
 }
+#undef main
 
 auto main() -> int
 {

@@ -15,7 +15,7 @@ public:
   }
 
 public:
-  auto AddChild(Positionable *child) -> void override;
+  auto AddCard(Positionable *child) -> void;
 };
 
 } // namespace Graphics

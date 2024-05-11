@@ -42,7 +42,7 @@ public:
   auto GetParent() const -> Positionable *
   { return _parent; }
 
-  auto SetParent(Positionable *parent) -> void;
+  auto SwitchParent(Positionable *parent) -> void;
   auto SetPosition(const Position &position) -> void;
   virtual auto AddChild(Positionable *child) -> void;
   auto RemoveChild(Positionable *child) -> void;

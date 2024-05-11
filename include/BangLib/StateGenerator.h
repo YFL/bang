@@ -2,12 +2,12 @@
 #define _STATE_GENERATOR_H_
 
 #include <MacroUtils.h>
+#include <GameState.h>
 #include <State.h>
 
 namespace Bang
 {
 
-class GameState;
 template <typename StateMachinType, StateMachinType enumValue>
 auto GetNextState(const StatePointer<StateMachinType> &state, const GameState &gameState)
   -> StatePointer<StateMachinType>

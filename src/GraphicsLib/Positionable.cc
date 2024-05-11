@@ -45,7 +45,7 @@ auto Positionable::RemoveChild(Positionable *child) -> void
     _children.erase(it, _children.end());
 }
 
-auto Positionable::SetParent(Positionable *parent) -> void
+auto Positionable::SwitchParent(Positionable *parent) -> void
 {
   if(_parent == parent)
     return;
@@ -54,7 +54,8 @@ auto Positionable::SetParent(Positionable *parent) -> void
     _parent->RemoveChild(this);
 
   _parent = parent;
-  _parent->AddChild(this);
+  if(_parent)
+    _parent->AddChild(this);
 }
 
 auto Positionable::SetPosition(const Position &position) -> void

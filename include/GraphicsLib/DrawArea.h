@@ -2,6 +2,8 @@
 
 #include <Position.h>
 
+#include <SDL.h>
+
 #include <cstdint>
 
 namespace Graphics
@@ -33,6 +35,11 @@ inline auto operator== (const DrawArea &a, const DrawArea &b) -> bool
 inline auto DoDrawAreasCollide(const DrawArea &a, const DrawArea &b, bool includeZ = false) -> bool;
 
 inline auto DoesDrawAreaFitAnother(const DrawArea &fits, const DrawArea &toFit) -> bool;
+
+inline auto DrawAreaToSDLRect(const DrawArea &drawArea) -> SDL_Rect
+{
+  return { drawArea.position.x, drawArea.position.y, drawArea.w, drawArea.h };
+}
 
 /**
  * Returns whether a point is inside of the draw area
