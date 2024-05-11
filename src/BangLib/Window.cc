@@ -2,7 +2,7 @@
 
 #include <Exception.h>
 
-#include <fmt/format.h>
+#include <format>
 
 #include <memory>
 #include <string>
@@ -26,7 +26,7 @@ Window::Window(
 
   if(!_window)
     throw
-      Utils::Exception {fmt::format("Couldn't create window \"{}\": {}", title, SDL_GetError())};
+      Utils::Exception {std::format("Couldn't create window \"{}\": {}", title, SDL_GetError())};
 
   renderer = std::unique_ptr<Renderer> {new Renderer {_window.get()}};
 }

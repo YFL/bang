@@ -5,7 +5,7 @@
 namespace Graphics
 {
 
-// Describes a fill window worth of content, that is going to be drawn.
+// Describes a full window worth of content, that is going to be drawn.
 class Screen : public Positionable
 {
 public:

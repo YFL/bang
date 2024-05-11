@@ -6,7 +6,7 @@ namespace Graphics
 auto CardCollapsingContainer::AddChild(Positionable *child) -> void
 {
   // The algorithm below works only for cards of the same width.
-  child->SetPosition({(_children.end() - 1)->first, 0});
+  /*child->SetPosition({(_children.end() - 1)->first, 0});
   Positionable::AddChild(child);
   const auto childWidth = child->GetDrawArea().w;
   auto positionXOffset = childWidth;
@@ -27,7 +27,7 @@ auto CardCollapsingContainer::AddChild(Positionable *child) -> void
     }
 
     ++cardIndex;
-  }
+  }*/
 }
 
 } // namespace Graphics

@@ -1,6 +1,6 @@
 #include <TextUtils.h>
 
-#include <fmt/format.h>
+#include <format>
 
 namespace Bang
 {
@@ -11,7 +11,7 @@ auto LoadFontFromFile(const std::string &pathToFIle, const uint32_t fontSize ) -
   if(!font)
   {
     std::cerr
-      << fmt::format("Couldn't open font \"{}\": {}", pathToFIle, TTF_GetError())
+      << std::format("Couldn't open font \"{}\": {}", pathToFIle, TTF_GetError())
       << std::endl;
 
     return nullptr;
@@ -30,7 +30,7 @@ auto TextToTexture(
   auto *surface = TTF_RenderText_Solid(font, text.c_str(), color);
   if(!surface)
   {
-    std::cerr << fmt::format("Couldn't render text \"{}\": {}", text, TTF_GetError()) << std::endl;
+    std::cerr << std::format("Couldn't render text \"{}\": {}", text, TTF_GetError()) << std::endl;
     return nullptr;
   }
 
@@ -38,7 +38,7 @@ auto TextToTexture(
   if(!texture)
   {
     std::cerr
-      << fmt::format("Couldn't create texture for text \"{}\": {}", text, SDL_GetError())
+      << std::format("Couldn't create texture for text \"{}\": {}", text, SDL_GetError())
       << std::endl;
     
     return nullptr;

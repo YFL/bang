@@ -5,7 +5,7 @@
 #include <Exception.h>
 #include <PlayCard.h>
 
-#include <fmt/format.h>
+#include <format>
 
 #include <json/json.h>
 
@@ -27,12 +27,12 @@ auto ReadJsonFromFile(const std::string &pathToFile) -> Json::Value
 {
   std::ifstream file(pathToFile);
   if(!file.is_open())
-    throw Utils::Exception {fmt::format("File {} couldn't be opened to read json,", pathToFile)};
+    throw Utils::Exception {std::format("File {} couldn't be opened to read json,", pathToFile)};
   
   Json::Reader r;
   Json::Value jsonRoot;
   if(!r.parse(file, jsonRoot, false))
-    throw Utils::Exception {fmt::format("File {} didn't contain valid json.", pathToFile)};
+    throw Utils::Exception {std::format("File {} didn't contain valid json.", pathToFile)};
 
   return jsonRoot;
 }
@@ -40,7 +40,7 @@ auto ReadJsonFromFile(const std::string &pathToFile) -> Json::Value
 auto JsonToCardPointer(const Json::Value &jsonObject) -> Bang::CardPointer
 {
   const auto format = [](const auto &part)
-  { return fmt::format("JSON card descriptor didn't contain \"{}\"", part); };
+  { return std::format("JSON card descriptor didn't contain \"{}\"", part); };
 
   const auto &nameJson = jsonObject[::NameKey];
   if(!nameJson.isString())
@@ -94,7 +94,7 @@ auto LoadFromFile(const std::string &pathToFile) -> CardPointerVector
   const auto jsonRoot = ::ReadJsonFromFile(pathToFile);
   if(!jsonRoot.isArray())
     throw Utils::Exception {
-      fmt::format("File \"{}\" didn't contain an array as it's root element.", pathToFile)};
+      std::format("File \"{}\" didn't contain an array as it's root element.", pathToFile)};
 
   CardPointerVector readCards;
   for(const auto &object : jsonRoot)
@@ -102,7 +102,7 @@ auto LoadFromFile(const std::string &pathToFile) -> CardPointerVector
     if(!object.isObject())
     {
       std::cerr
-        << fmt::format("Non object found in root of \"{}\" file. Skipping...", pathToFile)
+        << std::format("Non object found in root of \"{}\" file. Skipping...", pathToFile)
         << std::endl;
       
       continue;
@@ -115,7 +115,7 @@ auto LoadFromFile(const std::string &pathToFile) -> CardPointerVector
     catch(const Utils::Exception &e)
     {
       std::cerr
-        << fmt::format("Erroneous card descriptor found: {}. Skipping... ", e.Message())
+        << std::format("Erroneous card descriptor found: {}. Skipping... ", e.Message())
         << std::endl;
     }
   }

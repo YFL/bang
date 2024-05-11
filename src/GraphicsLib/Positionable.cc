@@ -25,7 +25,7 @@ auto Positionable::operator=(Positionable &&move) -> Positionable &
 
 auto Positionable::operator==(const Positionable &other) const -> bool
 {
-  return id == other.id
+  return Id == other.Id
     && GetAbsoluteDrawArea() == other.GetAbsoluteDrawArea();
 }
 
@@ -38,7 +38,7 @@ auto Positionable::RemoveChild(Positionable *child) -> void
 {
   const auto &it = std::remove_if(_children.begin(), _children.end(), [child](Positionable *item)
   {
-    return child->id == item->id;
+    return child->Id == item->Id;
   });
 
   if(it != _children.end())

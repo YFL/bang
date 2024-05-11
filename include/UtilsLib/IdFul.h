@@ -8,14 +8,13 @@ namespace Utils
 class IdFul
 {
 private:
-  static uint64_t Id;
-public:
-  IdFul()
-    : id {Id++}
-  {}
+  static uint64_t NextId;
 
 public:
-  uint64_t id;
+  IdFul();
+
+public:
+  const uint64_t Id;
 };
 
 } // namespace Utils

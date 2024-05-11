@@ -3,7 +3,7 @@
 #include <CardBankComponent.h>
 #include <ContentStorageComponent.h>
 #include <RenderingComponent.h>
-#include <SDL.h>
+#include <SDLWrapper.h>
 
 #include <memory>
 

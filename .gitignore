@@ -2,3 +2,6 @@
 *.code-workspace
 build
 content
+.vs
+external
+CMakeSettings.json

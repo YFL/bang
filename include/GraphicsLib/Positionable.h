@@ -5,14 +5,14 @@
 #include <EventHandler.h>
 #include <IdFul.h>
 
-#include <algorithm>
+#include <functional>
 #include <map>
 #include <vector>
 
 namespace Graphics
 {
 
-class Positionable : public Utils::IdFul, public Bang::IEventHandler<std::function<void()>
+class Positionable : public Utils::IdFul, public Bang::IEventHandler<std::function<void()>>
 {
 public:
   Positionable(Positionable *parent, const DrawArea &drawArea)

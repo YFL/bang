@@ -6,7 +6,7 @@
 #include <PlayCard.h>
 #include <PlayPhase.h>
 
-#include <fmt/format.h>
+#include <format>
 
 #include <iostream>
 
@@ -30,7 +30,7 @@ auto GenerateHandForPlayer(const Bang::PlayerPointer &player) -> void
 
   constexpr auto suit {Bang::Suit::Diamond};
   constexpr auto cardNumber {Bang::CardNumber::Ace};
-  const auto name = fmt::format("PlayCard {} {}", Bang::ToString(suit), Bang::ToString(cardNumber));
+  const auto name = std::format("PlayCard {} {}", Bang::ToString(suit), Bang::ToString(cardNumber));
   // TODO: Check if the texture already exists in the content storage before creating it.
   auto *texture = renderer->TextToTexture(font, name, SDL_Color {255, 0, 0, 0});
   contentStorageComponent->AddTexture(name, texture);
