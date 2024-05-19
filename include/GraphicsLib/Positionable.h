@@ -5,7 +5,9 @@
 #include <EventHandler.h>
 #include <IdFul.h>
 
+#include <format>
 #include <functional>
+#include <iostream>
 #include <map>
 #include <vector>
 
@@ -19,13 +21,19 @@ public:
     : IdFul {}
     , _parent {parent}
     , _drawArea {drawArea}
-  { if (parent) parent->AddChild(this); }
+  {
+    if (parent) parent->AddChild(this);
+    std::cerr << std::format("Positionable: {} {} {}", Id, reinterpret_cast<uint64_t>(_parent), ToString(_drawArea)) << std::endl;
+  }
 
   Positionable(const Positionable &) = delete;
   Positionable(Positionable &&move);
 
   virtual ~Positionable()
-  { if (_parent) _parent->RemoveChild(this); }
+  {
+    if (_parent) _parent->RemoveChild(this);
+    std::cerr << std::format("Positionable destructor: {} {} {}", Id, reinterpret_cast<uint64_t>(_parent), ToString(_drawArea)) << std::endl;
+  }
 
 public:
   auto operator=(const Positionable &) -> Positionable & = delete;

@@ -35,7 +35,7 @@ auto LoadCardBundle(const std::filesystem::path &bundlePath)
   const auto playCardFilePath = bundlePath / playCardsName;
   std::cout
     << std::format(
-      "Character file path: {} exists: {}",
+      "Playcard file path: {} exists: {}",
       playCardFilePath.string(),
       std::filesystem::exists(playCardFilePath))
     << std::endl;
@@ -86,8 +86,22 @@ namespace Bang
 auto CardBankComponent::LoadAllBanks(const std::string &bankDirectoryPath) -> void
 {
   const std::filesystem::path path(bankDirectoryPath);
+  std::filesystem::directory_iterator bundlePaths;
+  try
+  {
+    bundlePaths = std::filesystem::directory_iterator(path);
+  }
+  catch (const std::exception &e)
+  {
+    std::cerr
+      << std::format("{} doesn't contain any card banks: {}", path.string(), e.what())
+      << std::endl;
+
+    return;
+  }
+
   // Load card information from all bundles
-  for (auto &bundlePath : std::filesystem::directory_iterator(path))
+  for (auto &bundlePath : bundlePaths)
   {
     if(!bundlePath.is_directory())
       continue;

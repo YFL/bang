@@ -15,6 +15,9 @@ public:
   }
 
 public:
+  auto AddChild(Positionable* child) -> void override;
+
+private:
   auto AddCard(Positionable *child) -> void;
 };
 

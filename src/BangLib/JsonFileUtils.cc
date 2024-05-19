@@ -18,7 +18,7 @@ namespace
 constexpr auto cardNumberKey = "cardNumber";
 constexpr auto descriptionKey = "description";
 constexpr auto NameKey = "name";
-constexpr auto numberOfLifesKey = "numberOfLifes";
+constexpr auto numberOfLivesKey = "numberOfLives";
 constexpr auto PiecesInDeckKey = "piecesInDeck";
 constexpr auto SuitKey = "suit";
 constexpr auto TextureNameKey = "textureName";
@@ -39,6 +39,8 @@ auto ReadJsonFromFile(const std::string &pathToFile) -> Json::Value
 
 auto JsonToCardPointer(const Json::Value &jsonObject) -> Bang::CardPointer
 {
+  std::cout << std::format("Card descriptor: {}", jsonObject.toStyledString());
+
   const auto format = [](const auto &part)
   { return std::format("JSON card descriptor didn't contain \"{}\"", part); };
 
@@ -58,7 +60,7 @@ auto JsonToCardPointer(const Json::Value &jsonObject) -> Bang::CardPointer
   if(!textureNameJson.isString())
     throw Utils::Exception(format(TextureNameKey));
 
-  const auto &numberOfLifesJson = jsonObject[::numberOfLifesKey];
+  const auto &numberOfLifesJson = jsonObject[::numberOfLivesKey];
   if(numberOfLifesJson.isInt())
   {
     return Bang::CardPointer {

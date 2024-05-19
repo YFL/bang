@@ -34,8 +34,11 @@ auto GenerateHandForPlayer(const Bang::PlayerPointer &player) -> void
   // TODO: Check if the texture already exists in the content storage before creating it.
   auto *texture = renderer->TextToTexture(font, name, SDL_Color {255, 0, 0, 0});
   contentStorageComponent->AddTexture(name, texture);
-  player->CardsInHand(Bang::CardPointerVector {
-    std::make_shared<Bang::PlayCard>("PlayCard", texture, cardNumber, suit)});
+  Bang::CardPointerVector cards;
+  for (auto i = 0u; i < 5; ++i)
+    cards.emplace_back(new Bang::PlayCard { "PlayCard", texture, cardNumber, suit });
+
+  player->CardsInHand(cards);
 }
 
 } // namespace 

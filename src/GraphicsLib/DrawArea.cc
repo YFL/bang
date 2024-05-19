@@ -1,5 +1,7 @@
 #include <DrawArea.h>
 
+#include <format>
+
 namespace Graphics
 {
 
@@ -32,6 +34,17 @@ inline auto IsPointInDrawArea(const DrawArea &area, const Position &point, bool 
     && area.position.x + area.w >= point.x
     && area.position.y <= point.y
     && area.position.y + area.h >= point.y;
+}
+
+auto ToString(const DrawArea& drawArea) -> std::string
+{
+  return std::format(
+    "DrawArea: x: {} y: {} z: {} widht: {} height: {}",
+    drawArea.position.x,
+    drawArea.position.y,
+    drawArea.position.z,
+    drawArea.w,
+    drawArea.h);
 }
 
 } // namespace Graphics

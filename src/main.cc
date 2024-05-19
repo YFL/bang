@@ -10,6 +10,7 @@
 #include <GraphicsLib/Screen.h>
 
 #include <iostream>
+#include <ranges>
 
 namespace
 {
@@ -48,24 +49,33 @@ auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::
     const auto &cardsInHand = player->CardsInHand();
     const auto& playerPosition = ::PlayerPositions[playerIndex];
 
+    std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
+
     Graphics::CardCollapsingContainer cardCollapsingContainer {
       &mainGameScreen,
       Graphics::DrawArea {
-        {playerPosition.x, playerPosition.y},
+        {static_cast<int32_t>(::FirstCardToScreenLeftOffset), static_cast<int32_t>(playerPosition.y ), 0},
         static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping* ::CardWidth),
         static_cast<int32_t>(::CardHeight)}};
 
-    std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
+    const auto cardCollapsingContainerDrawArea = cardCollapsingContainer.GetDrawArea();
+    std::cerr << std::format("CardCollapsingContainer drawArea: {}", ToString(cardCollapsingContainerDrawArea)) << std::endl;
     
     std::vector<Graphics::Positionable> positionables;
-    for(auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
+    positionables.reserve(10);
+    for (auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
     {
-      positionables.emplace_back(&cardCollapsingContainer, Graphics::DrawArea {{}, static_cast<uint32_t>(::CardWidth), static_cast<uint32_t>(::CardHeight)});
-      const auto& cardPosition = DrawAreaToSDLRect(positionables.back().GetDrawArea());
-      std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
-      renderer->RenderTexture(cardsInHand[cardIndex]->Texture(), nullptr, &cardPosition);
-      std::cerr << " Card #" << cardIndex << " drawn." << std::endl;
+      positionables.emplace_back(&cardCollapsingContainer, Graphics::DrawArea{ {}, static_cast<int32_t>(::CardWidth), static_cast<int32_t>(::CardHeight) });
     }
+
+    auto cardIndex = 0u;
+    std::ranges::for_each(positionables, [&cardIndex, &renderer, &cardsInHand](const Graphics::Positionable& positionable)
+      {
+        const auto& cardPosition = Graphics::DrawAreaToSDLRect(positionable.GetAbsoluteDrawArea());
+        std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
+        renderer->RenderTexture(cardsInHand[cardIndex]->Texture(), nullptr, &cardPosition);
+        std::cerr << " Card #" << cardIndex++ << " drawn." << std::endl;
+      });
 
     std::cerr << "Drawing player #" << playerIndex << "'s character." << std::endl;
     auto *character = player->Character();
@@ -120,7 +130,8 @@ auto main() -> int
       
     Bang::GameState gameState;
 
-    SDL_Event event;
+    SDL_Event event {};
+
     while(event.type != SDL_QUIT)
     {
       std::cerr << "Polling events." << std::endl;

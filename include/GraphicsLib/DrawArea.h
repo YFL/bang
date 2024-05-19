@@ -4,6 +4,8 @@
 
 #include <SDL.h>
 
+#include <string>
+
 #include <cstdint>
 
 namespace Graphics
@@ -27,7 +29,7 @@ struct DrawArea
 //! @return The absolute draw area of b with respect to a. The size of the
 //!   draw area is the size of b.
 inline auto operator+ (const DrawArea &a, const DrawArea &b) -> DrawArea
-{ return {a.position.x + b.position.x, a.position.y + b.position.y, b.w, b.h}; }
+{ return { {a.position.x + b.position.x, a.position.y + b.position.y}, b.w, b.h }; }
 
 inline auto operator== (const DrawArea &a, const DrawArea &b) -> bool
 { return a.position == b.position && a.w == b.w && a.h == b.h; }
@@ -49,5 +51,7 @@ inline auto IsPointInDrawArea(
   const Position &point,
   bool includeZ = false)
   -> bool;
+
+auto ToString(const DrawArea& drawArea) -> std::string;
 
 } // namespace Graphics

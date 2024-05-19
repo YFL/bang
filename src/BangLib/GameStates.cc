@@ -1,11 +1,5 @@
 #include <GameStates.h>
 
-#include <GenerateCharacters.h>
-#include <DealInitialHand.h>
-#include <DrawPhase.h>
-#include <PlayPhase.h>
-#include <DropPhase.h>
-
 namespace Bang
 {
 

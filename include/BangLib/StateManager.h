@@ -9,6 +9,10 @@
 namespace Bang
 {
 
+/**
+* The main idea is, that the manager holds the state and makes it update on every tick but the
+* states control the edges (when and where to).
+*/
 template <typename StateType>
 class StateManager
 {
