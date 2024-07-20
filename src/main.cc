@@ -5,7 +5,7 @@
 #include <BangLib/StateManager.h>
 #include <SDLUtilsLib/TextUtils.h>
 
-#include <GraphicsLib/CardCollapsingContainer.h>
+#include <GraphicsLib/CardCollapsingHoveredHighlightingContainer.h>
 #include <GraphicsLib/Positionable.h>
 #include <GraphicsLib/Screen.h>
 
@@ -62,7 +62,7 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer>& renderer, std::shared
 
     std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
 
-    Graphics::CardCollapsingContainer cardCollapsingContainer{
+    Graphics::CardCollapsingHoveredHighlightingContainer cardCollapsingContainer{
       mainGameScreen.get(),
       Utils::DrawArea {
         {static_cast<int32_t>(::FirstCardToScreenLeftOffset), static_cast<int32_t>(playerPosition.y), 0},
