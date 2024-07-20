@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-namespace Bang
+namespace Utils
 {
 
 Window::Window(
@@ -31,4 +31,4 @@ Window::Window(
   renderer = std::unique_ptr<Renderer> {new Renderer {_window.get()}};
 }
 
-} // namespace Bang
+} // namespace Utils

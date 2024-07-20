@@ -7,12 +7,12 @@
 namespace Graphics
 {
 
-Positionable::Positionable(Positionable &&move)
+Positionable::Positionable(Positionable &&move) noexcept
 {
   *this = std::move(move);
 }
 
-auto Positionable::operator=(Positionable &&move) -> Positionable &
+auto Positionable::operator=(Positionable &&move) noexcept -> Positionable &
 {
   move._parent->RemoveChild(&move);
   _parent = std::move(move._parent);
@@ -58,7 +58,7 @@ auto Positionable::SwitchParent(Positionable *parent) -> void
     _parent->AddChild(this);
 }
 
-auto Positionable::SetPosition(const Position &position) -> void
+auto Positionable::SetPosition(const Utils::Position &position) -> void
 {
   _drawArea.position = position;
 }

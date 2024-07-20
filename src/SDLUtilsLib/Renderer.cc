@@ -4,7 +4,7 @@
 #include <ImageUtils.h>
 #include <TextUtils.h>
 
-namespace Bang
+namespace Utils
 {
 
 Renderer::Renderer(
@@ -53,8 +53,8 @@ auto Renderer::TextToTexture(
   const SDL_Color &color) const
   -> SDL_Texture *
 {
-  return Bang::TextToTexture(font, _renderer.get(), text, color);
+  return Utils::TextToTexture(font, _renderer.get(), text, color);
 }
 
 
-} // namespace Bang
+} // namespace Utils

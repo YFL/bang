@@ -21,7 +21,7 @@ const std::unordered_map<Bang::CardNumber, std::string> cardNumberToString {
   {Bang::CardNumber::Ace, "Ace"}
 };
 
-} // namespace 
+} // namespace
 
 namespace Bang
 {

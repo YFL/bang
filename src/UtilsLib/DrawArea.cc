@@ -2,7 +2,7 @@
 
 #include <format>
 
-namespace Graphics
+namespace Utils
 {
 
 auto DoDrawAreasCollide(const DrawArea &a, const DrawArea &b, bool includeZ) -> bool
@@ -10,7 +10,7 @@ auto DoDrawAreasCollide(const DrawArea &a, const DrawArea &b, bool includeZ) -> 
   if (includeZ)
     if (a.position.z != b.position.z)
       return false;
-    
+
   return !(a.position.x + a.w < b.position.x
     || a.position.x > b.position.x + b.w
     || a.position.y + a.h < b.position.y
@@ -25,7 +25,10 @@ inline auto DoesDrawAreaFitAnother(const DrawArea &fits, const DrawArea &toFit) 
     && fits.position.y + fits.h <= toFit.position.y + toFit.h;
 }
 
-inline auto IsPointInDrawArea(const DrawArea &area, const Position &point, bool includeZ) -> bool
+auto IsPointInDrawArea(
+  const DrawArea &area,
+  const Position &point,
+  bool includeZ) -> bool
 {
   if(includeZ && area.position.z != point.z)
     return false;
@@ -47,4 +50,4 @@ auto ToString(const DrawArea& drawArea) -> std::string
     drawArea.h);
 }
 
-} // namespace Graphics
+} // namespace Utils

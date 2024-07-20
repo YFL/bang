@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace Bang
+namespace Utils
 {
 
 auto LoadTextureFromJpg(SDL_Renderer *renderer, const std::string &pathToFile) -> SDL_Texture *
@@ -26,4 +26,4 @@ auto LoadTextureFromJpg(SDL_Renderer *renderer, const std::string &pathToFile) -
   return texture;
 }
 
-} // namespace Bang
+} // namespace Utils

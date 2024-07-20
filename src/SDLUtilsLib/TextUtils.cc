@@ -2,16 +2,16 @@
 
 #include <format>
 
-namespace Bang
+namespace Utils
 {
 
-auto LoadFontFromFile(const std::string &pathToFIle, const uint32_t fontSize ) -> TTF_Font *
+auto LoadFontFromFile(const std::string &pathToFile, const uint32_t fontSize ) -> TTF_Font *
 {
-  auto *font = TTF_OpenFont(pathToFIle.c_str(), fontSize);
+  auto *font = TTF_OpenFont(pathToFile.c_str(), fontSize);
   if(!font)
   {
     std::cerr
-      << std::format("Couldn't open font \"{}\": {}", pathToFIle, TTF_GetError())
+      << std::format("Couldn't open font \"{}\": {}", pathToFile.c_str(), TTF_GetError())
       << std::endl;
 
     return nullptr;
@@ -40,11 +40,11 @@ auto TextToTexture(
     std::cerr
       << std::format("Couldn't create texture for text \"{}\": {}", text, SDL_GetError())
       << std::endl;
-    
+
     return nullptr;
   }
 
   return texture;
 }
 
-} // namespace Bang
+} // namespace Utils

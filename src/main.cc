@@ -3,12 +3,13 @@
 #include <BangLib/GameState.h>
 #include <BangLib/GameStates.h>
 #include <BangLib/StateManager.h>
-#include <BangLib/TextUtils.h>
+#include <SDLUtilsLib/TextUtils.h>
 
 #include <GraphicsLib/CardCollapsingContainer.h>
 #include <GraphicsLib/Positionable.h>
 #include <GraphicsLib/Screen.h>
 
+#include <fstream>
 #include <iostream>
 #include <ranges>
 
@@ -33,83 +34,96 @@ const std::vector<SDL_Rect> PlayerPositions {
 };
 
 constexpr auto CardBundlesDirectoryPath = "./cardBundles";
-  
-} // namespace 
 
-auto DrawGameState(const std::unique_ptr<Bang::Renderer> &renderer, const Bang::GameState &gameState) -> void
+auto PrepareMainGameScreen() -> std::shared_ptr<Graphics::Screen>
 {
-  Graphics::Screen mainGameScreen {WindowWidth, WindowHeight};
-  for(auto playerIndex = 0u; playerIndex < gameState.players.size(); ++playerIndex)
+  auto screen = std::make_shared<Graphics::Screen>(WindowWidth, WindowHeight);
+
+  const auto &app = Bang::Application::Get();
+  auto *mouse = &(app.inputComponent->mouse);
+  // Static cast didn't work here and I'm not sure why.
+  dynamic_cast<Utils::IEventEmitter<Utils::MouseButtonEvent> *>(mouse)->RegisterHandler(screen);
+  dynamic_cast<Utils::IEventEmitter<Utils::MouseMovementEvent> *>(mouse)->RegisterHandler(screen);
+
+  return screen;
+}
+
+auto DrawGameState(const std::unique_ptr<Utils::Renderer>& renderer, std::shared_ptr<Graphics::Screen>& mainGameScreen, const Bang::GameState& gameState) -> void
+{
+  for (auto playerIndex = 0u; playerIndex < gameState.players.size(); ++playerIndex)
   {
     std::cerr << "Drawing player #" << playerIndex << " state." << std::endl;
-    const auto &player = gameState.players[playerIndex];
-    if(!player)
-      throw Utils::Exception {"Null player found when drawing the game state." };
-    
-    const auto &cardsInHand = player->CardsInHand();
+    const auto& player = gameState.players[playerIndex];
+    if (!player)
+      throw Utils::Exception{ "Null player found when drawing the game state." };
+
+    const auto& cardsInHand = player->CardsInHand();
     const auto& playerPosition = ::PlayerPositions[playerIndex];
 
     std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
 
-    Graphics::CardCollapsingContainer cardCollapsingContainer {
-      &mainGameScreen,
-      Graphics::DrawArea {
-        {static_cast<int32_t>(::FirstCardToScreenLeftOffset), static_cast<int32_t>(playerPosition.y ), 0},
-        static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping* ::CardWidth),
-        static_cast<int32_t>(::CardHeight)}};
+    Graphics::CardCollapsingContainer cardCollapsingContainer{
+      mainGameScreen.get(),
+      Utils::DrawArea {
+        {static_cast<int32_t>(::FirstCardToScreenLeftOffset), static_cast<int32_t>(playerPosition.y), 0},
+        static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping * ::CardWidth),
+        static_cast<int32_t>(::CardHeight)} };
 
     const auto cardCollapsingContainerDrawArea = cardCollapsingContainer.GetDrawArea();
     std::cerr << std::format("CardCollapsingContainer drawArea: {}", ToString(cardCollapsingContainerDrawArea)) << std::endl;
-    
+
     std::vector<Graphics::Positionable> positionables;
     positionables.reserve(10);
     for (auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
     {
-      positionables.emplace_back(&cardCollapsingContainer, Graphics::DrawArea{ {}, static_cast<int32_t>(::CardWidth), static_cast<int32_t>(::CardHeight) });
+      positionables.emplace_back(&cardCollapsingContainer, Utils::DrawArea{ {}, static_cast<int32_t>(::CardWidth), static_cast<int32_t>(::CardHeight) });
     }
 
     auto cardIndex = 0u;
     std::ranges::for_each(positionables, [&cardIndex, &renderer, &cardsInHand](const Graphics::Positionable& positionable)
       {
-        const auto& cardPosition = Graphics::DrawAreaToSDLRect(positionable.GetAbsoluteDrawArea());
+        const auto& cardPosition = Utils::DrawAreaToSDLRect(positionable.GetAbsoluteDrawArea());
         std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
         renderer->RenderTexture(cardsInHand[cardIndex]->Texture(), nullptr, &cardPosition);
         std::cerr << " Card #" << cardIndex++ << " drawn." << std::endl;
       });
 
     std::cerr << "Drawing player #" << playerIndex << "'s character." << std::endl;
-    auto *character = player->Character();
-    if(!character)
+    auto* character = player->Character();
+    if (!character)
     {
       std::cerr << "No character available." << std::endl;
       return;
     }
 
-    const SDL_Rect characterPosition {
+    const SDL_Rect characterPosition{
       playerPosition.x,
       playerPosition.y - static_cast<int32_t>(::CardHeight),
       static_cast<int32_t>(::CardWidth),
       static_cast<int32_t>(::CardHeight)
     };
-    
+
     std::cerr << "Character position: " << characterPosition.x << ", " << characterPosition.y << ", " << characterPosition.w << ", " << characterPosition.h << std::endl;
     renderer->RenderTexture(character->Texture(), nullptr, &characterPosition);
     std::cerr << "Drawing player #" << playerIndex << "'s character finished." << std::endl;
   }
 }
+
+} // namespace
+
 #undef main
 
 auto main() -> int
 {
   try
   {
-    auto &application = Bang::Application::Get();
+    const auto &application = Bang::Application::Get();
     auto &window = application.renderingComponent->window;
     std::cout << "Creating window." << std::endl;
-    window = std::unique_ptr<Bang::Window> {
-      new Bang::Window {::WindowWidth, ::WindowHeight, "Bang"}};
+    window = std::unique_ptr<Utils::Window> {
+      new Utils::Window {::WindowWidth, ::WindowHeight, "Bang"}};
 
-    auto &renderer = window->renderer;
+    const auto &renderer = window->renderer;
 
     // Loading the card banks requires a renderer.
     std::cout << "Loading card banks." << std::endl;
@@ -117,21 +131,26 @@ auto main() -> int
 
     const auto fontName = "./font.ttf";
     std::cout << "Loading font." << std::endl;
-    auto *font = Bang::LoadFontFromFile(fontName, 180u);
+    auto *font = Utils::LoadFontFromFile(fontName, 180u);
     if(!font)
       throw Utils::Exception {""};
 
     std::cout << "Adding font to content storage: " << fontName << " " << font << std::endl;
     application.contentStorageComponent->AddFont(fontName, font);
-    
+
     std::cout << "Creating state manager with CreatePlayers initial state." << std::endl;
-    Bang::StateManager<Bang::State<GameStates>> stateManager {
+    Bang::StateManager stateManager {
       std::unique_ptr<Bang::State<GameStates>> {new Bang::CreatePlayers}};
-      
+
     Bang::GameState gameState;
 
-    SDL_Event event {};
+    // TODO: Remove the temporary prepare screen hack.
+    std::cerr
+      << "Preparing screen. !!!ATTENTION: THIS IS A TEMPORARY SOLUTION. REWORK ASAP"
+      << std::endl;
+    auto screen = ::PrepareMainGameScreen();
 
+    SDL_Event event {};
     while(event.type != SDL_QUIT)
     {
       std::cerr << "Polling events." << std::endl;
@@ -139,10 +158,35 @@ auto main() -> int
       {
         if(event.type == SDL_QUIT)
           break;
-        else if(event.type == SDL_KEYDOWN)
+        if(event.type == SDL_KEYDOWN)
         {
           if(event.key.keysym.sym == SDLK_ESCAPE)
-          break;
+            break;
+        }
+        else if (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
+        {
+          const auto &button = event.button;
+          static std::ofstream buttonClicks { "buttonClicks.txt" };
+          buttonClicks
+            << std::format(
+              "button: {} clicks: {} state: {} timestamp: {} x: {} y: {} windowId: {} which: {}",
+              button.button,
+              button.clicks,
+              button.state,
+              button.timestamp,
+              button.x,
+              button.y,
+              button.windowID,
+              button.which)
+            << std::endl;
+
+          application.inputComponent->mouse.Handle(static_cast<SDL_MouseButtonEvent>(
+            event.button));
+        }
+        else if (event.type == SDL_MOUSEMOTION)
+        {
+          application.inputComponent->mouse.Handle(static_cast<SDL_MouseMotionEvent>(
+            event.motion));
         }
       }
 
@@ -156,10 +200,10 @@ auto main() -> int
       std::cerr << "Renderer cleared." << std::endl;
 
       std::cerr << "Drawing the game state." << std::endl;
-      DrawGameState(renderer, gameState);
+      ::DrawGameState(renderer, screen, gameState);
       std::cerr << "Drawing finished" << std::endl;
 
-      std::cerr << "Presenting the rendererd frame." << std::endl;
+      std::cerr << "Presenting the rendered frame." << std::endl;
       renderer->RenderPresent();
       std::cerr << "Presenting finished." << std::endl;
     }

@@ -1,10 +1,6 @@
 #pragma once
 
-#include <Window.h>
-
-#include <memory>
-
-namespace Bang
+namespace Utils
 {
 
 class SDL
@@ -20,4 +16,4 @@ public:
   auto operator=(SDL &&) -> const SDL & = delete;
 };
 
-} // namespace Bang
+} // namespace Utils

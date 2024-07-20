@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace Graphics
+namespace Utils
 {
 
 struct Position
@@ -15,4 +15,4 @@ struct Position
 inline auto operator== (const Position &a, const Position &b) -> bool
 { return a.x == b.x && a.y == b.y && a.z == b.z; }
 
-} // namespace Graphcis
+} // namespace Utils

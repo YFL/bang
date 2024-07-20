@@ -1,35 +1,23 @@
 #pragma once
 
-#include <algorithm>
-#include <unordered_map>
-#include <vector>
-
-#include <cstdint>
-
-namespace Bang
+namespace Utils
 {
 
-template <typename HandlerType>
+template <typename Event>
 class IEventHandler
 {
-protected:
-  auto RegisterHandler(HandlerType handler) -> void
-  { _handlers.push_back(handler); }
+public:
+  IEventHandler() = default;
+  IEventHandler(const IEventHandler &) = default;
+  IEventHandler(IEventHandler &&) = default;
+  virtual ~IEventHandler() = default;
 
-  template<typename ...ArgsT>
-  auto HandleEvent(const ArgsT ...args)
-  {
-    std::for_each(
-      _handlers.begin(),
-      _handlers.end(),
-      [...args = args](const HandlerType &handler)
-      {
-        handler(args...);
-      });
-  }
+public:
+  auto operator=(const IEventHandler &) -> IEventHandler & = default;
+  auto operator=(IEventHandler &&) -> IEventHandler & = default;
 
-protected:
-  std::vector<HandlerType> _handlers;
+public:
+  virtual auto Handle(const Event& event) -> void = 0;
 };
 
-} // namespace Bang
+} // namespace Utils

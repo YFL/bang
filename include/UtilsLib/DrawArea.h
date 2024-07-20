@@ -1,14 +1,13 @@
 #pragma once
 
 #include <Position.h>
-
 #include <SDL.h>
 
 #include <string>
 
 #include <cstdint>
 
-namespace Graphics
+namespace Utils
 {
 
 struct DrawArea
@@ -46,7 +45,7 @@ inline auto DrawAreaToSDLRect(const DrawArea &drawArea) -> SDL_Rect
 /**
  * Returns whether a point is inside of the draw area
 */
-inline auto IsPointInDrawArea(
+auto IsPointInDrawArea(
   const DrawArea &area,
   const Position &point,
   bool includeZ = false)
@@ -54,4 +53,4 @@ inline auto IsPointInDrawArea(
 
 auto ToString(const DrawArea& drawArea) -> std::string;
 
-} // namespace Graphics
+} // namespace Utils

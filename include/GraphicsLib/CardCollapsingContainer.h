@@ -8,13 +8,13 @@ namespace Graphics
 class CardCollapsingContainer : public Positionable
 {
 public:
-  CardCollapsingContainer(Positionable *parent, const DrawArea &drawArea)
+  CardCollapsingContainer(Positionable *parent, const Utils::DrawArea &drawArea)
     : Positionable {parent, drawArea}
   {
 
   }
 
-public:
+protected:
   auto AddChild(Positionable* child) -> void override;
 
 private:

@@ -11,9 +11,9 @@ namespace
 
 constexpr auto DefaultRendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
-} // namespace 
+} // namespace
 
-namespace Bang
+namespace Utils
 {
 
 class Renderer
@@ -21,8 +21,8 @@ class Renderer
 public:
   Renderer(
     SDL_Window *window,
-    const int32_t renderingDriverIndex = -1,
-    const SDL_RendererFlags flags = static_cast<SDL_RendererFlags>(::DefaultRendererFlags));
+    int32_t renderingDriverIndex = -1,
+    SDL_RendererFlags flags = static_cast<SDL_RendererFlags>(::DefaultRendererFlags));
   ~Renderer() = default;
   Renderer(const Renderer &) = delete;
   Renderer(Renderer &&) = delete;
@@ -48,7 +48,7 @@ public:
 
 private:
   std::unique_ptr<SDL_Renderer, void (*)(SDL_Renderer *)> _renderer =
-  {nullptr, SDL_DestroyRenderer};
+    {nullptr, SDL_DestroyRenderer};
 };
 
-} // namespace Bang
+} // namespace Utils

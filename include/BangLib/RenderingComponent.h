@@ -18,7 +18,7 @@ public:
   auto operator=(RenderingComponent &&) -> const RenderingComponent & = delete;
 
 public:
-  std::unique_ptr<Window> window = nullptr;
+  std::unique_ptr<Utils::Window> window = nullptr;
 };
 
 } // namespace Bang

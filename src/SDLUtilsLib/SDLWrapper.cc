@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-namespace Bang
+namespace Utils
 {
 
 SDL::SDL()
@@ -40,4 +40,4 @@ SDL::~SDL()
   SDL_Quit();
 }
 
-} // namespace Bang
+} // namespace Utils
