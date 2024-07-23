@@ -1,7 +1,8 @@
 .vscode
 *.code-workspace
+.vs
 build
 content
-.vs
 external
 CMakeSettings.json
+vendor
