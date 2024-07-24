@@ -44,4 +44,6 @@ private:
   std::unique_ptr<SDL_Window, void (*)(SDL_Window *)> _window = {nullptr, SDL_DestroyWindow};
 };
 
+using WindowPointer = std::unique_ptr<Window>;
+
 } // namespace Utils

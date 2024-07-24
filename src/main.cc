@@ -35,19 +35,6 @@ const std::vector<SDL_Rect> PlayerPositions {
 
 constexpr auto CardBundlesDirectoryPath = "./cardBundles";
 
-auto PrepareMainGameScreen() -> std::shared_ptr<Graphics::Screen>
-{
-  auto screen = std::make_shared<Graphics::Screen>(WindowWidth, WindowHeight);
-
-  const auto &app = Bang::Application::Get();
-  auto *mouse = &(app.inputComponent->mouse);
-  // Static cast didn't work here and I'm not sure why.
-  dynamic_cast<Utils::IEventEmitter<Utils::MouseButtonEvent> *>(mouse)->RegisterHandler(screen);
-  dynamic_cast<Utils::IEventEmitter<Utils::MouseMovementEvent> *>(mouse)->RegisterHandler(screen);
-
-  return screen;
-}
-
 auto DrawGameState(const std::unique_ptr<Utils::Renderer>& renderer, std::shared_ptr<Graphics::Screen>& mainGameScreen, const Bang::GameState& gameState) -> void
 {
   for (auto playerIndex = 0u; playerIndex < gameState.players.size(); ++playerIndex)
@@ -117,14 +104,6 @@ auto main() -> int
 {
   try
   {
-    const auto &application = Bang::Application::Get();
-    auto &window = application.renderingComponent->window;
-    std::cout << "Creating window." << std::endl;
-    window = std::unique_ptr<Utils::Window> {
-      new Utils::Window {::WindowWidth, ::WindowHeight, "Bang"}};
-
-    const auto &renderer = window->renderer;
-
     // Loading the card banks requires a renderer.
     std::cout << "Loading card banks." << std::endl;
     application.cardBankComponent->LoadAllBanks(::CardBundlesDirectoryPath);
