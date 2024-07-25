@@ -30,7 +30,7 @@ if(${BANG_VENDORED})
   set(SDL2_INCLUDE_DIR vendor/SDL2_image/include/SDL2)
   set(SDL2_ttf_DIR "${CMAKE_SOURCE_DIR}/vendor/SDL2_ttf/cmake/")
   set(SDL2TTF_VERSION 2.23.0)
-  set(SDL2_INCLUDE_DIR vendor/SDL2_ttf/include/SDL2)
+  set(SDL2TTF_INCLUDE_DIR vendor/SDL2_ttf/include/SDL2)
 endif()
 message(STATUS "jsoncpp_DIR: ${jsoncpp_DIR}")
 find_package(jsoncpp ${JSONCPP_VERSION} REQUIRED)
@@ -93,11 +93,12 @@ if(WIN32)
     TARGET BangGame POST_BUILD
     COMMAND for %I in ("$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/jsoncpp/bin/jsoncpp.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2/bin/SDL2.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2_image/bin/SDL2_image.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2_ttf/bin//SDL2_ttf.dll>") do copy /y %I $<SHELL_PATH:$<TARGET_FILE_DIR:BangGame>>
     VERBATIM)
-  add_custom_command(
-    TARGET BangGame POST_BUILD
-    COMMAND xcopy "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/assets>" "$<SHELL_PATH:${CMAKE_BINARY_DIR}>\\" /E /Y
-    VERBATIM)
 endif()
+
+add_custom_command(
+  TARGET BangGame POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/assets>" "$<SHELL_PATH:${CMAKE_BINARY_DIR}>\\"
+  VERBATIM)
 
 set_target_properties(Bang PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "lib" LIBRARY_OUTPUT_DIRECTORY "lib" RUNTIME_OUTPUT_DIRECTORY "bin")
 set_target_properties(Graphics PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "lib" LIBRARY_OUTPUT_DIRECTORY "lib" RUNTIME_OUTPUT_DIRECTORY "bin")
