@@ -105,6 +105,11 @@ auto main() -> int
   try
   {
     auto &application = Bang::Application::Get();
+    application.renderingComponent->Init(
+      ::WindowWidth,
+      ::WindowHeight,
+      "Bang",
+      application.inputComponent);
     // Loading the card banks requires a renderer.
     std::cout << "Loading card banks." << std::endl;
     application.cardBankComponent->LoadAllBanks(::CardBundlesDirectoryPath);
@@ -123,12 +128,6 @@ auto main() -> int
       std::unique_ptr<Bang::State<GameStates>> {new Bang::CreatePlayers}};
 
     Bang::GameState gameState;
-
-    application.renderingComponent->Init(
-      ::WindowWidth,
-      ::WindowHeight,
-      "Bang",
-      application.inputComponent);
 
     SDL_Event event {};
     auto &renderer = application.renderingComponent->window->renderer;
