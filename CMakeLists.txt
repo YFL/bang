@@ -4,16 +4,23 @@ project(Bang)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 option(BANG_VENDORED "Use the dependencied in external, or try and find system-wide installed ones.")
+option(BANG_JSONCPP_VENDORED "Since there might be problems with using preinstalled jsoncpp we can force using the included jsoncpp with this.")
 
+set(JSONCPP_VERSION)
 set(SDL2_VERSION)
 set(SDL2IMAGE_VERSION)
 set(SDL2TTF_VERSION)
 set(JSONCPP_INCLUDE_DIR /usr/include)
+if(${BANG_JSONCPP_VENDORED})
+  set(JSONCPP_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vendor/jsoncpp/include")
+  set(jsoncpp_DIR "${CMAKE_SOURCE_DIR}/vendor/jsoncpp/lib/cmake/jsoncpp")
+endif()
 set(SDL2_INCLUDE_DIR /usr/include/SDL2)
 set(SDL2IMAGE_INCLUDE_DIR /usr/include/SDL2)
 set(SDL2TTF_INCLUDE_DIR /usr/include/SDL2)
 if(${BANG_VENDORED})
   set(jsoncpp_DIR "${CMAKE_SOURCE_DIR}/vendor/jsoncpp/lib/cmake/jsoncpp")
+  set(JSONCPP_VERSION 1.9.5)
   set(JSONCPP_INCLUDE_DIR vendor/jsoncpp/include/)
   set(SDL2_DIR "${CMAKE_SOURCE_DIR}/vendor/SDL2/cmake/")
   set(SDL2_VERSION 2.31.0)
@@ -25,7 +32,8 @@ if(${BANG_VENDORED})
   set(SDL2TTF_VERSION 2.23.0)
   set(SDL2_INCLUDE_DIR vendor/SDL2_ttf/include/SDL2)
 endif()
-find_package(jsoncpp 1.9.5 REQUIRED)
+message(STATUS "jsoncpp_DIR: ${jsoncpp_DIR}")
+find_package(jsoncpp ${JSONCPP_VERSION} REQUIRED)
 find_package(SDL2 ${SDL2_VERSION} REQUIRED)
 find_package(SDL2_image ${SDL2IMAGE_VERSION} REQUIRED)
 find_package(SDL2_ttf ${SDL2TTF_VERSION} REQUIRED)
@@ -40,6 +48,7 @@ target_include_directories(Bang PUBLIC ${JSONCPP_INCLUDE_DIR})
 target_include_directories(Bang PUBLIC ${SDL2_INCLUDE_DIR})
 target_include_directories(Bang PUBLIC ${SDL2IMAGE_INCLUDE_DIR})
 target_include_directories(Bang PUBLIC ${SDL2TTF_INCLUDE_DIR})
+target_link_libraries(Bang PUBLIC JsonCpp::JsonCpp)
 set_property(TARGET Bang PROPERTY CXX_STANDARD 20)
 
 file(GLOB UtilsLibSources src/UtilsLib/*.cc include/UtilsLib/*.h)
@@ -74,18 +83,21 @@ set_property(TARGET SDLUtils PROPERTY CXX_STANDARD 20)
 
 file(GLOB BangSources src/*.cc include/*.h)
 add_executable(BangGame ${BangSources})
-target_link_libraries(BangGame PUBLIC Bang Utils Graphics SDLUtils)
+target_link_libraries(BangGame PUBLIC Bang Utils Graphics SDLUtils JsonCpp::JsonCpp)
 target_include_directories(BangGame PUBLIC "include/")
 target_include_directories(BangGame PUBLIC "include/GraphicsLib")
 set_property(TARGET BangGame PROPERTY CXX_STANDARD 20)
-add_custom_command(
-  TARGET BangGame POST_BUILD
-  COMMAND for %I in ("$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/jsoncpp/bin/jsoncpp.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2/bin/SDL2.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2_image/bin/SDL2_image.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2_ttf/bin//SDL2_ttf.dll>") do copy /y %I $<SHELL_PATH:$<TARGET_FILE_DIR:BangGame>>
-  VERBATIM)
-add_custom_command(
-  TARGET BangGame POST_BUILD
-  COMMAND xcopy "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/assets>" "$<SHELL_PATH:${CMAKE_BINARY_DIR}>\\" /E /Y
-  VERBATIM)
+
+if(WIN32)
+  add_custom_command(
+    TARGET BangGame POST_BUILD
+    COMMAND for %I in ("$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/jsoncpp/bin/jsoncpp.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2/bin/SDL2.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2_image/bin/SDL2_image.dll>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/vendor/SDL2_ttf/bin//SDL2_ttf.dll>") do copy /y %I $<SHELL_PATH:$<TARGET_FILE_DIR:BangGame>>
+    VERBATIM)
+  add_custom_command(
+    TARGET BangGame POST_BUILD
+    COMMAND xcopy "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/assets>" "$<SHELL_PATH:${CMAKE_BINARY_DIR}>\\" /E /Y
+    VERBATIM)
+endif()
 
 set_target_properties(Bang PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "lib" LIBRARY_OUTPUT_DIRECTORY "lib" RUNTIME_OUTPUT_DIRECTORY "bin")
 set_target_properties(Graphics PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "lib" LIBRARY_OUTPUT_DIRECTORY "lib" RUNTIME_OUTPUT_DIRECTORY "bin")
