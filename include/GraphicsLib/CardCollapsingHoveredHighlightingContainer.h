@@ -11,7 +11,9 @@ class CardCollapsingHoveredHighlightingContainer
   , public Utils::IEventHandler<Utils::MouseMovementEvent>
 {
 public:
-  CardCollapsingHoveredHighlightingContainer(Positionable *parent, const Utils::DrawArea &area)
+  CardCollapsingHoveredHighlightingContainer(
+    const PositionablePointer &parent,
+    const Utils::DrawArea &area)
     : CardCollapsingContainer(parent, area)
   {
 

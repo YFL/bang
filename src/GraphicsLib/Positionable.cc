@@ -14,11 +14,12 @@ Positionable::Positionable(Positionable &&move) noexcept
 
 auto Positionable::operator=(Positionable &&move) noexcept -> Positionable &
 {
-  move._parent->RemoveChild(&move);
+  move._parent.lock()->RemoveChild(move.Id);
   _parent = std::move(move._parent);
-  move._parent = nullptr;
+  move._parent = {};
   _drawArea = std::move(move._drawArea);
-  _parent->AddChild(this);
+  if(!_parent.expired())
+    _parent.lock()->AddChild(this);
 
   return *this;
 }
@@ -34,28 +35,32 @@ auto Positionable::AddChild(Positionable *child) -> void
   _children.push_back(child);
 }
 
-auto Positionable::RemoveChild(Positionable *child) -> void
+auto Positionable::RemoveChild(uint64_t childId) -> void
 {
-  const auto &it = std::remove_if(_children.begin(), _children.end(), [child](Positionable *item)
-  {
-    return child->Id == item->Id;
-  });
+  const auto &it = std::remove_if(
+    _children.begin(),
+    _children.end(),
+    [childId](Positionable *item)
+    {
+      return childId == item->Id;
+    });
 
   if(it != _children.end())
     _children.erase(it, _children.end());
 }
 
-auto Positionable::SwitchParent(Positionable *parent) -> void
+auto Positionable::SwitchParent(PositionablePointer &parent) -> void
 {
-  if(_parent == parent)
+  auto parentLocked = _parent.lock();
+  if(parentLocked)
     return;
 
-  if(_parent)
-    _parent->RemoveChild(this);
+  if(parentLocked)
+    parentLocked->RemoveChild(Id);
 
   _parent = parent;
-  if(_parent)
-    _parent->AddChild(this);
+  if(!_parent.expired())
+    _parent.lock()->AddChild(this);
 }
 
 auto Positionable::SetPosition(const Utils::Position &position) -> void

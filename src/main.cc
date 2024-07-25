@@ -11,7 +11,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <ranges>
 
 namespace
 {
@@ -51,21 +50,28 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
 
     std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
 
-    Graphics::CardCollapsingHoveredHighlightingContainer cardCollapsingContainer{
-      mainGameScreen.get(),
-      Utils::DrawArea {
-        {static_cast<int32_t>(::FirstCardToScreenLeftOffset), static_cast<int32_t>(playerPosition.y), 0},
-        static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping * ::CardWidth),
-        static_cast<int32_t>(::CardHeight)} };
+    auto cardCollapsingContainer =
+      std::make_shared<Graphics::CardCollapsingHoveredHighlightingContainer>(
+        mainGameScreen,
+        Utils::DrawArea
+        {
+          {
+            static_cast<int32_t>(::FirstCardToScreenLeftOffset),
+            static_cast<int32_t>(playerPosition.y),
+            0
+          },
+          static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping * ::CardWidth),
+          static_cast<int32_t>(::CardHeight)
+        });
 
-    const auto cardCollapsingContainerDrawArea = cardCollapsingContainer.GetDrawArea();
+    const auto cardCollapsingContainerDrawArea = cardCollapsingContainer->GetDrawArea();
     std::cerr << std::format("CardCollapsingContainer drawArea: {}", ToString(cardCollapsingContainerDrawArea)) << std::endl;
 
     std::vector<Graphics::Positionable> positionables;
     positionables.reserve(10);
     for (auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
     {
-      positionables.emplace_back(&cardCollapsingContainer, Utils::DrawArea{ {}, static_cast<int32_t>(::CardWidth), static_cast<int32_t>(::CardHeight) });
+      positionables.emplace_back(cardCollapsingContainer, Utils::DrawArea{ {}, static_cast<int32_t>(::CardWidth), static_cast<int32_t>(::CardHeight) });
     }
 
     auto cardIndex = 0u;

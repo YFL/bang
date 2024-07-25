@@ -26,14 +26,14 @@ auto CardCollapsingContainer::AddCard(Positionable *child) -> void
     auto cardIndex = 0;
     std::ranges::for_each(
       _children,
-      [&cardIndex, /*positionXOffset, */verticalOffsetBetweenCards](Positionable* card)
+      [&cardIndex, verticalOffsetBetweenCards](Positionable *card)
       {
         card->SetPosition({ cardIndex++ * static_cast<int32_t>(verticalOffsetBetweenCards), 0 });
       });
   }
 }
 
-auto CardCollapsingContainer::AddChild(Positionable* child) -> void
+auto CardCollapsingContainer::AddChild(Positionable *child) -> void
 {
   Positionable::AddChild(child);
   AddCard(child);
