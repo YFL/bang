@@ -3,12 +3,12 @@
 namespace Bang
 {
 
-Application::Application(const uint32_t windowWidth, const uint32_t windowHeight)
+Application::Application()
   : _sdl {}
   , cardBankComponent {new CardBankComponent}
   , contentStorageComponent {new ContentStorageComponent}
   , inputComponent {new InputComponent}
-  , renderingComponent{ new RenderingComponent { windowWidth, windowHeight, inputComponent } }
+  , renderingComponent{new RenderingComponent}
 {
 
 }

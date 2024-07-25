@@ -21,7 +21,7 @@ public:
   }
 
 private:
-  Application(uint32_t windowWidth, uint32_t windowHeight);
+  Application();
   ~Application() = default;
   Application(const Application &) = delete;
   Application(Application &&) = delete;

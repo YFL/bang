@@ -35,7 +35,7 @@ const std::vector<SDL_Rect> PlayerPositions {
 
 constexpr auto CardBundlesDirectoryPath = "./cardBundles";
 
-auto DrawGameState(const std::unique_ptr<Utils::Renderer>& renderer, std::shared_ptr<Graphics::Screen>& mainGameScreen, const Bang::GameState& gameState) -> void
+auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared_ptr<Graphics::Screen> &mainGameScreen, const Bang::GameState &gameState) -> void
 {
   for (auto playerIndex = 0u; playerIndex < gameState.players.size(); ++playerIndex)
   {
@@ -104,6 +104,7 @@ auto main() -> int
 {
   try
   {
+    auto &application = Bang::Application::Get();
     // Loading the card banks requires a renderer.
     std::cout << "Loading card banks." << std::endl;
     application.cardBankComponent->LoadAllBanks(::CardBundlesDirectoryPath);
@@ -123,13 +124,14 @@ auto main() -> int
 
     Bang::GameState gameState;
 
-    // TODO: Remove the temporary prepare screen hack.
-    std::cerr
-      << "Preparing screen. !!!ATTENTION: THIS IS A TEMPORARY SOLUTION. REWORK ASAP"
-      << std::endl;
-    auto screen = ::PrepareMainGameScreen();
+    application.renderingComponent->Init(
+      ::WindowWidth,
+      ::WindowHeight,
+      "Bang",
+      application.inputComponent);
 
     SDL_Event event {};
+    auto &renderer = application.renderingComponent->window->renderer;
     while(event.type != SDL_QUIT)
     {
       std::cerr << "Polling events." << std::endl;
@@ -179,7 +181,7 @@ auto main() -> int
       std::cerr << "Renderer cleared." << std::endl;
 
       std::cerr << "Drawing the game state." << std::endl;
-      ::DrawGameState(renderer, screen, gameState);
+      ::DrawGameState(renderer, application.renderingComponent->screen, gameState);
       std::cerr << "Drawing finished" << std::endl;
 
       std::cerr << "Presenting the rendered frame." << std::endl;

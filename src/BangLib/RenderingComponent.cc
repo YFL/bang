@@ -5,13 +5,16 @@
 namespace Bang
 {
 
-RenderingComponent::RenderingComponent(
+auto RenderingComponent::Init(
   const uint32_t windowWidth,
   const uint32_t windowHeight,
   const char *windowTitle,
-  std::unique_ptr<InputComponent> &inputComponent)
-  : window { new Utils::Window { windowWidth, windowHeight, windowTitle } }
+  const std::unique_ptr<InputComponent> &inputComponent) -> void
 {
+  std::cout << "Creating window." << std::endl;
+  window = std::unique_ptr<Utils::Window> {
+    new Utils::Window { windowWidth, windowHeight, windowTitle }};
+
   std::cout << "Creating screen." << std::endl;
   screen = std::make_shared<Graphics::Screen>(windowWidth, windowHeight);
 
