@@ -28,6 +28,8 @@ constexpr auto CardHeight = WindowHeight / ScreenToCardHeightRatio;
 constexpr auto FirstCardToScreenLeftOffset = (WindowWidth - MaxCardsNextToEachOtherWithoutOverlapping * CardWidth) / 2;
 constexpr auto BottomRowHeight = WindowHeight / ScreenToBottomRowHeightRatio;
 
+constexpr auto FontName = "./WesternBangBang-Regular.ttf";
+
 const std::vector<SDL_Rect> PlayerPositions {
   {static_cast<int32_t>(FirstCardToScreenLeftOffset), static_cast<int32_t>(WindowHeight - BottomRowHeight - CardHeight)},
   {static_cast<int32_t>(WindowWidth - CardWidth), static_cast<int32_t>(CardHeight)}
@@ -114,14 +116,13 @@ auto main() -> int
     std::cout << "Loading card banks." << std::endl;
     application.cardBankComponent->LoadAllBanks(::CardBundlesDirectoryPath);
 
-    const auto fontName = "./font.ttf";
     std::cout << "Loading font." << std::endl;
-    auto *font = Utils::LoadFontFromFile(fontName, 180u);
+    auto *font = Utils::LoadFontFromFile(::FontName, 180u);
     if(!font)
       throw Utils::Exception {""};
 
-    std::cout << "Adding font to content storage: " << fontName << " " << font << std::endl;
-    application.contentStorageComponent->AddFont(fontName, font);
+    std::cout << "Adding font to content storage: " << ::FontName << " " << font << std::endl;
+    application.contentStorageComponent->AddFont(::FontName, font);
 
     std::cout << "Creating state manager with CreatePlayers initial state." << std::endl;
     Bang::StateManager stateManager {
