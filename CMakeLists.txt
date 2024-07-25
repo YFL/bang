@@ -97,7 +97,7 @@ endif()
 
 add_custom_command(
   TARGET BangGame POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/assets>" "$<SHELL_PATH:${CMAKE_BINARY_DIR}>\\"
+  COMMAND ${CMAKE_COMMAND} -E copy_directory "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/assets>" "$<SHELL_PATH:${CMAKE_BINARY_DIR}/>"
   VERBATIM)
 
 set_target_properties(Bang PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "lib" LIBRARY_OUTPUT_DIRECTORY "lib" RUNTIME_OUTPUT_DIRECTORY "bin")
