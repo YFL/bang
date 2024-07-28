@@ -17,11 +17,12 @@ class Positionable;
 
 using PositionablePointer = std::shared_ptr<Positionable>;
 using PositionableWeakPtr = std::weak_ptr<Positionable>;
-using PositionableRawPtrVector = std::vector<Positionable *>;
+using PositionableWeakPtrVector = std::vector<PositionableWeakPtr>;
 
 class Positionable
   : public Utils::IdFul
   , public Utils::IEventEmitter<std::function<void()>>
+  , public std::enable_shared_from_this<Positionable>
 {
 public:
   Positionable(const PositionablePointer &parent, const Utils::DrawArea &drawArea)
@@ -29,13 +30,11 @@ public:
     , _parent {parent}
     , _drawArea {drawArea}
   {
-    auto parentLocked = _parent.lock();
-    if (parentLocked) parentLocked->AddChild(this);
     std::cerr
       << std::format(
         "Positionable: {} {} {}",
         Id,
-        reinterpret_cast<uint64_t>(parentLocked.get()),
+        reinterpret_cast<uint64_t>(_parent.lock().get()),
         Utils::ToString(_drawArea))
       << std::endl;
   }
@@ -74,12 +73,12 @@ public:
 
   auto SwitchParent(PositionablePointer &parent) -> void;
   auto SetPosition(const Utils::Position &position) -> void;
-  virtual auto AddChild(Positionable *child) -> void;
+  virtual auto AddChild(const PositionablePointer &child) -> void;
   auto RemoveChild(uint64_t childId) -> void;
 
 protected:
   PositionableWeakPtr _parent = {};
-  PositionableRawPtrVector _children = {};
+  PositionableWeakPtrVector _children = {};
   //! Draw area's position is relative to parent
   Utils::DrawArea _drawArea = {};
 };

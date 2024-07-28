@@ -14,11 +14,11 @@ public:
 
   }
 
-protected:
-  auto AddChild(Positionable *child) -> void override;
+public:
+  auto AddChild(const PositionablePointer &child) -> void override;
 
 private:
-  auto AddCard(Positionable *child) -> void;
+  auto AddCard(const PositionablePointer &child) -> void;
 };
 
 } // namespace Graphics

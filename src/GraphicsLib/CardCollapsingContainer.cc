@@ -4,7 +4,7 @@
 namespace Graphics
 {
 
-auto CardCollapsingContainer::AddCard(Positionable *child) -> void
+auto CardCollapsingContainer::AddCard(const PositionablePointer &child) -> void
 {
   // The algorithm below works only for cards of the same width.
   const auto childWidth = child->GetDrawArea().w;
@@ -26,14 +26,15 @@ auto CardCollapsingContainer::AddCard(Positionable *child) -> void
     auto cardIndex = 0;
     std::ranges::for_each(
       _children,
-      [&cardIndex, verticalOffsetBetweenCards](Positionable *card)
+      [&cardIndex, verticalOffsetBetweenCards](PositionableWeakPtr &card)
       {
-        card->SetPosition({ cardIndex++ * static_cast<int32_t>(verticalOffsetBetweenCards), 0 });
+        card.lock()->SetPosition(
+          { cardIndex++ * static_cast<int32_t>(verticalOffsetBetweenCards), 0 });
       });
   }
 }
 
-auto CardCollapsingContainer::AddChild(Positionable *child) -> void
+auto CardCollapsingContainer::AddChild(const PositionablePointer &child) -> void
 {
   Positionable::AddChild(child);
   AddCard(child);

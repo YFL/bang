@@ -65,23 +65,15 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
         });
 
     const auto cardCollapsingContainerDrawArea = cardCollapsingContainer->GetDrawArea();
-    std::cerr << std::format("CardCollapsingContainer drawArea: {}", ToString(cardCollapsingContainerDrawArea)) << std::endl;
+    std::cerr
+      <<
+        std::format(
+          "CardCollapsingContainer drawArea: {}",
+          ToString(cardCollapsingContainerDrawArea))
+      << std::endl;
 
-    std::vector<Graphics::Positionable> positionables;
-    positionables.reserve(10);
-    for (auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
-    {
-      positionables.emplace_back(cardCollapsingContainer, Utils::DrawArea{ {}, static_cast<int32_t>(::CardWidth), static_cast<int32_t>(::CardHeight) });
-    }
-
-    auto cardIndex = 0u;
-    std::ranges::for_each(positionables, [&cardIndex, &renderer, &cardsInHand](const Graphics::Positionable& positionable)
-      {
-        const auto& cardPosition = Utils::DrawAreaToSDLRect(positionable.GetAbsoluteDrawArea());
-        std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
-        renderer->RenderTexture(cardsInHand[cardIndex]->Texture(), nullptr, &cardPosition);
-        std::cerr << " Card #" << cardIndex++ << " drawn." << std::endl;
-      });
+    for(const auto &card : cardsInHand)
+      cardCollapsingContainer->AddChild(card->Positionable());
 
     std::cerr << "Drawing player #" << playerIndex << "'s character." << std::endl;
     auto* character = player->Character();

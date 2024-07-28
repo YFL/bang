@@ -11,9 +11,10 @@ auto CardCollapsingHoveredHighlightingContainer::Handle(
 
   for (auto &child : _children)
   {
-    if (IsPointInDrawArea(child->GetAbsoluteDrawArea(), event.newPos))
+    if (auto childLocked = child.lock();
+      childLocked && IsPointInDrawArea(childLocked->GetAbsoluteDrawArea(), event.newPos))
     {
-      std::cout << std::format("Card {} is hovered by the mouse", child->Id) << std::endl;
+      std::cout << std::format("Card {} is hovered by the mouse", childLocked->Id) << std::endl;
     }
   }
 }

@@ -2,7 +2,7 @@
 
 #include <Exception.h>
 
-#include <cassert>
+#include <ranges>
 
 namespace Graphics
 {
@@ -19,34 +19,32 @@ auto Positionable::operator=(Positionable &&move) noexcept -> Positionable &
   move._parent = {};
   _drawArea = std::move(move._drawArea);
   if(!_parent.expired())
-    _parent.lock()->AddChild(this);
+    _parent.lock()->AddChild(shared_from_this());
 
   return *this;
 }
 
 auto Positionable::operator==(const Positionable &other) const -> bool
 {
-  return Id == other.Id
-    && GetAbsoluteDrawArea() == other.GetAbsoluteDrawArea();
+  return Id == other.Id && GetAbsoluteDrawArea() == other.GetAbsoluteDrawArea();
 }
 
-auto Positionable::AddChild(Positionable *child) -> void
+auto Positionable::AddChild(const std::shared_ptr<Positionable> &child) -> void
 {
   _children.push_back(child);
 }
 
 auto Positionable::RemoveChild(uint64_t childId) -> void
 {
-  const auto &it = std::remove_if(
-    _children.begin(),
-    _children.end(),
-    [childId](Positionable *item)
+  const auto &[deleteFirst, deleteLast] = std::ranges::remove_if(
+    _children,
+    [childId](const PositionableWeakPtr &item)
     {
-      return childId == item->Id;
+      const auto itemLocked = item.lock();
+      return !itemLocked && childId == itemLocked->Id;
     });
 
-  if(it != _children.end())
-    _children.erase(it, _children.end());
+  _children.erase(deleteFirst, deleteLast);
 }
 
 auto Positionable::SwitchParent(PositionablePointer &parent) -> void
@@ -60,7 +58,7 @@ auto Positionable::SwitchParent(PositionablePointer &parent) -> void
 
   _parent = parent;
   if(!_parent.expired())
-    _parent.lock()->AddChild(this);
+    _parent.lock()->AddChild(shared_from_this());
 }
 
 auto Positionable::SetPosition(const Utils::Position &position) -> void
