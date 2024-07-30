@@ -1,6 +1,7 @@
 #include <DealInitialHand.h>
 
 #include <Application.h>
+#include <CardCollapsingHoveredHighlightingContainer.h>
 #include <Exception.h>
 #include <GameState.h>
 #include <PlayCard.h>
@@ -39,6 +40,41 @@ auto GenerateHandForPlayer(const Bang::PlayerPointer &player) -> void
     cards.emplace_back(new Bang::PlayCard { "PlayCard", texture, cardNumber, suit });
 
   player->CardsInHand(cards);
+}
+
+auto AddHandsToScreen(const Bang::PlayerPointerVector &players) -> void
+{
+  if (players.empty()) return;
+  const auto app = Bang::Application::Get();
+  const auto playerPositions = app.configComponent->PlayerPositions();
+  const auto &screen = app.renderingComponent->screen;
+  for (auto playerIndex = 0u; playerIndex < players.size(); ++playerIndex)
+  {
+    const auto &player = players[playerIndex];
+    const auto &screen = Bang::Application::Get().renderingComponent->screen;
+
+    const auto &cardsInHand = player->CardsInHand();
+    const auto playerPosition = playerPositions[playerIndex];
+
+    std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
+
+    auto cardCollapsingContainer =
+      std::make_shared<Graphics::CardCollapsingHoveredHighlightingContainer>(
+        screen,
+        Utils::DrawArea
+        {
+          {
+            static_cast<int32_t>(::FirstCardToScreenLeftOffset),
+            static_cast<int32_t>(playerPosition.y),
+            0
+          },
+          static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping * ::CardWidth),
+          static_cast<int32_t>(::CardHeight)
+        });
+
+    for(const auto &card : cardsInHand)
+      cardCollapsingContainer->AddChild(card->Positionable());
+  }
 }
 
 } // namespace

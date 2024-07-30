@@ -45,36 +45,6 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
     if (!player)
       throw Utils::Exception{ "Null player found when drawing the game state." };
 
-    const auto& cardsInHand = player->CardsInHand();
-    const auto& playerPosition = ::PlayerPositions[playerIndex];
-
-    std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
-
-    auto cardCollapsingContainer =
-      std::make_shared<Graphics::CardCollapsingHoveredHighlightingContainer>(
-        mainGameScreen,
-        Utils::DrawArea
-        {
-          {
-            static_cast<int32_t>(::FirstCardToScreenLeftOffset),
-            static_cast<int32_t>(playerPosition.y),
-            0
-          },
-          static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping * ::CardWidth),
-          static_cast<int32_t>(::CardHeight)
-        });
-
-    const auto cardCollapsingContainerDrawArea = cardCollapsingContainer->GetDrawArea();
-    std::cerr
-      <<
-        std::format(
-          "CardCollapsingContainer drawArea: {}",
-          ToString(cardCollapsingContainerDrawArea))
-      << std::endl;
-
-    for(const auto &card : cardsInHand)
-      cardCollapsingContainer->AddChild(card->Positionable());
-
     std::cerr << "Drawing player #" << playerIndex << "'s character." << std::endl;
     auto* character = player->Character();
     if (!character)

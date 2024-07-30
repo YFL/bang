@@ -1,5 +1,4 @@
 #include <CardCollapsingContainer.h>
-#include <ranges>
 
 namespace Graphics
 {
