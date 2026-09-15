@@ -36,7 +36,7 @@ auto AddCharacterToScreen(
   std::cerr << "Setting character position to x: " << playerPosition.position.x << " y: " << playerPosition.position.y - cardSize.y * converter << std::endl;
   characterPositionable->SetPosition({
       playerPosition.position.x,
-      playerPosition.position.y - cardSize.y * converter
+      playerPosition.position.y - static_cast<int32_t>(cardSize.y * converter)
     });
 
   screen->AddChild(characterPositionable);
