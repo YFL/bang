@@ -77,6 +77,7 @@ public:
 
   auto SwitchParent(PositionablePointer &parent) -> void;
   auto SetPosition(const Utils::Position &position) -> void;
+  auto SetSize(const Utils::TwoDSize &size) -> void;
   virtual auto AddChild(const PositionablePointer &child) -> void;
   auto RemoveChild(const xg::Guid &childId) -> void;
 

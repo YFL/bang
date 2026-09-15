@@ -83,8 +83,9 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
       continue;
     }
 
-    renderer->RenderTexture(character->Texture(), nullptr, &Utils::DrawAreaToSDLRect(
-      character->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea()));
+    const auto characterPosition = Utils::DrawAreaToSDLRect(
+      character->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea());
+    renderer->RenderTexture(character->Texture(), nullptr, &characterPosition);
 
     for (const auto& card : player->CardsInHand())
     {

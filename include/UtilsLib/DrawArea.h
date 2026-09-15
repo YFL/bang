@@ -28,7 +28,12 @@ struct DrawArea
 //! @return The absolute draw area of b with respect to a. The size of the
 //!   draw area is the size of b.
 inline auto operator+ (const DrawArea &a, const DrawArea &b) -> DrawArea
-{ return { {a.position.x + b.position.x, a.position.y + b.position.y}, b.size.x, b.size.y }; }
+{
+  return {
+    {a.position.x + b.position.x, a.position.y + b.position.y},
+    {b.size.x, b.size.y, b.size.unit}
+  };
+}
 
 inline auto operator== (const DrawArea &a, const DrawArea &b) -> bool
 { return a.position == b.position && a.size == b.size; }
