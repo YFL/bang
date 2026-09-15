@@ -1,5 +1,6 @@
 #pragma once
 
+#include <2dSize.h>
 #include <Position.h>
 #include <SDL.h>
 
@@ -13,8 +14,7 @@ namespace Utils
 struct DrawArea
 {
   Position position;
-  int32_t w;
-  int32_t h;
+  TwoDSize size;
 };
 
 //! @brief Get the "absolute" draw area of b relative to a.
@@ -28,10 +28,10 @@ struct DrawArea
 //! @return The absolute draw area of b with respect to a. The size of the
 //!   draw area is the size of b.
 inline auto operator+ (const DrawArea &a, const DrawArea &b) -> DrawArea
-{ return { {a.position.x + b.position.x, a.position.y + b.position.y}, b.w, b.h }; }
+{ return { {a.position.x + b.position.x, a.position.y + b.position.y}, b.size.x, b.size.y }; }
 
 inline auto operator== (const DrawArea &a, const DrawArea &b) -> bool
-{ return a.position == b.position && a.w == b.w && a.h == b.h; }
+{ return a.position == b.position && a.size == b.size; }
 
 inline auto DoDrawAreasCollide(const DrawArea &a, const DrawArea &b, bool includeZ = false) -> bool;
 
@@ -39,7 +39,7 @@ inline auto DoesDrawAreaFitAnother(const DrawArea &fits, const DrawArea &toFit) 
 
 inline auto DrawAreaToSDLRect(const DrawArea &drawArea) -> SDL_Rect
 {
-  return { drawArea.position.x, drawArea.position.y, drawArea.w, drawArea.h };
+  return { drawArea.position.x, drawArea.position.y, drawArea.size.x, drawArea.size.y };
 }
 
 /**

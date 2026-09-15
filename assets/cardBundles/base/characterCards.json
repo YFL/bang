@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Willy The Kid",
+    "description": "Can use any number of Bangs in his turn",
+    "piecesInDeck": 1,
+    "textureName": "willy_the_kid",
+    "numberOfLives": 4
+  }
+]

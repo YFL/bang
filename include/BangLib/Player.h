@@ -11,7 +11,7 @@ public:
   Player() = default;
 
 public:
-  auto Character(Card *character) -> void
+  auto Character(const CardPointer &character) -> void
   { _character = character; }
 
   auto CardsInHand(const CardPointerVector &cards) -> void
@@ -21,7 +21,7 @@ public:
   { _currentLife = newCurrentLife; }
 
 public:
-  auto Character() const -> Card *
+  auto Character() const -> CardPointer
   { return _character; }
 
   auto CardsInHand() const -> const CardPointerVector &
@@ -34,7 +34,7 @@ public:
   { return _currentLife; }
 
 private:
-  Card *_character = nullptr;
+  CardPointer _character = nullptr;
   CardPointerVector _cardsInHand = {};
   CardPointerVector _cardsOnTable = {};
   uint32_t _currentLife = 0u;

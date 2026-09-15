@@ -17,7 +17,10 @@ class Screen
 {
 public:
   Screen(int32_t w, int32_t h)
-    : Positionable {nullptr, {{0, 0}, w, h}}
+    : Positionable{
+      nullptr,
+      nullptr,
+      { Utils::Position {0, 0, 0}, Utils::TwoDSize {w, h, Utils::LengthUnits::px} }}
     , Utils::IEventHandler<Utils::MouseButtonEvent> {}
     , Utils::IEventHandler<Utils::MouseMovementEvent> {}
   {}
@@ -28,9 +31,6 @@ public:
 
 protected:
   auto ChildAdded(Positionable *child) -> void;
-
-private:
-  
 };
 
 } // namespace Graphics

@@ -10,3 +10,6 @@
 [submodule "external/SDL_ttf"]
 	path = external/SDL_ttf
 	url = https://github.com/libsdl-org/SDL_ttf.git
+[submodule "external/crossguid"]
+	path = external/crossguid
+	url = https://github.com/graeme-hill/crossguid.git

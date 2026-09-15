@@ -5,4 +5,5 @@ build
 content
 external
 CMakeSettings.json
+CMakeLists.txt.user
 vendor

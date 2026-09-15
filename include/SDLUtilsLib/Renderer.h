@@ -39,6 +39,7 @@ public:
     const SDL_Rect *destination) const
     -> void;
   auto SetDrawColor(const SDL_Color &color) const -> void;
+  auto DrawRectangle(const SDL_Rect& rect) const -> void;
   auto LoadImageFromJpg(const std::string &pathToFile) const -> SDL_Texture *;
   auto TextToTexture(
     TTF_Font *font,

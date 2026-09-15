@@ -21,35 +21,24 @@ class IEventEmitter
 public:
   auto RegisterHandler(std::shared_ptr<IEventHandler<HandlerArgumentType>> &&handler) -> void
   {
-    std::cerr << this << " Registered handler" << std::endl;
     _handlers.emplace_back(handler);
-    std::cerr << std::format("Handlers size: {}", _handlers.size()) << std::endl;
   }
 
 protected:
   auto Emit(const HandlerArgumentType &arg) -> void
   {
-    std::cerr
-      << std::format(
-        "{:x} Handlers size before removal: {}",
-        reinterpret_cast<uint64_t>(this),
-        _handlers.size())
-      << std::endl;
-
     const auto [eraseStart, eraseEnd] = std::ranges::remove_if(
       _handlers,
       [](std::weak_ptr<IEventHandler<HandlerArgumentType>>& handler)
       {
         return handler.expired();
       });
-    _handlers.erase(eraseStart, eraseEnd);
+    if (eraseStart != _handlers.end())
+      std::cerr 
+        << std::format("Number of handlers to be removed {}", std::distance(eraseStart, eraseEnd))
+        << std::endl;
 
-    std::cerr
-      << std::format(
-        "{:x} Handlers size after removal: {}",
-        reinterpret_cast<uint64_t>(this),
-        _handlers.size())
-      << std::endl;
+    _handlers.erase(eraseStart, eraseEnd);
 
     std::ranges::for_each(
       _handlers,

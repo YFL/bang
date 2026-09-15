@@ -49,24 +49,22 @@ auto FromJson(const Json::Value& card) -> Bang::CardPointer
   const auto& numberOfLifesJson = card[::numberOfLivesKey];
   if (numberOfLifesJson.isInt())
   {
-    return Bang::CardPointer{
-      new Bang::CharacterCard {
+    return std::make_shared<Bang::CharacterCard>(
         nameJson.asString(),
         descriptionJson.asString(),
         Bang::Application::Get().contentStorageComponent->GetTexture(textureNameJson.asString()),
-        numberOfLifesJson.asUInt()} };
+        numberOfLifesJson.asUInt());
   }
 
   const auto& suitJson = card[::SuitKey];
   const auto& cardNumberJson = card[::cardNumberKey];
   if (suitJson.isInt() && cardNumberJson.isInt())
   {
-    return Bang::CardPointer{
-      new Bang::PlayCard {
+    return std::make_shared<Bang::PlayCard>(
         nameJson.asString(),
         Bang::Application::Get().contentStorageComponent->GetTexture(textureNameJson.asString()),
         static_cast<Bang::CardNumber>(cardNumberJson.asInt()),
-        static_cast<Bang::Suit>(suitJson.asInt())} };
+        static_cast<Bang::Suite>(suitJson.asInt()));
   }
 
   return nullptr;

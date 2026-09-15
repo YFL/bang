@@ -6,12 +6,10 @@
 namespace Utils
 {
 
-uint64_t IdFul::NextId = 0u;
-
 IdFul::IdFul()
-  : Id{ NextId++ }
+  : Id { xg::newGuid() }
 {
-  std::cerr << std::format("IdFul: Id: {} NextId: {}", Id, NextId) << std::endl;
+  std::cerr << std::format("IdFul: Id: {}", Id.str()) << std::endl;
 }
 
 } // namespace Utils

@@ -1,5 +1,7 @@
 #include <Screen.h>
 
+#include <Renderer.h>
+
 namespace Graphics
 {
 

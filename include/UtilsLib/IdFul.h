@@ -1,20 +1,17 @@
 #pragma once
 
-#include <cstdint>
+#include <guid.hpp>
 
 namespace Utils
 {
 
 class IdFul
 {
-private:
-  static uint64_t NextId;
-
 public:
   IdFul();
 
 public:
-  const uint64_t Id;
+  const xg::Guid Id;
 };
 
 } // namespace Utils

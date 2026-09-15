@@ -42,6 +42,11 @@ auto Renderer::SetDrawColor(const SDL_Color &color) const -> void
   SDL_SetRenderDrawColor(_renderer.get(), color.r, color.g, color.b, color.a);
 }
 
+auto Renderer::DrawRectangle(const SDL_Rect& rect) const -> void
+{
+  SDL_RenderDrawRect(_renderer.get(), &rect);
+}
+
 auto Renderer::LoadImageFromJpg(const std::string &pathToFile) const -> SDL_Texture *
 {
   return LoadTextureFromJpg(_renderer.get(), pathToFile);

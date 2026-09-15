@@ -5,13 +5,13 @@
 #include <BangLib/StateManager.h>
 #include <SDLUtilsLib/TextUtils.h>
 
-#include <GraphicsLib/CardCollapsingContainer.h>
+#include <GraphicsLib/CardCollapsingHoveredHighlightingContainer.h>
 #include <GraphicsLib/Positionable.h>
 #include <GraphicsLib/Screen.h>
 
+#include <array>
 #include <fstream>
 #include <iostream>
-#include <ranges>
 
 namespace
 {
@@ -28,84 +28,102 @@ constexpr auto CardHeight = WindowHeight / ScreenToCardHeightRatio;
 constexpr auto FirstCardToScreenLeftOffset = (WindowWidth - MaxCardsNextToEachOtherWithoutOverlapping * CardWidth) / 2;
 constexpr auto BottomRowHeight = WindowHeight / ScreenToBottomRowHeightRatio;
 
-const std::vector<SDL_Rect> PlayerPositions {
-  {static_cast<int32_t>(FirstCardToScreenLeftOffset), static_cast<int32_t>(WindowHeight - BottomRowHeight - CardHeight)},
-  {static_cast<int32_t>(WindowWidth - CardWidth), static_cast<int32_t>(CardHeight)}
+constexpr auto FontName = "./WesternBangBang-Regular.ttf";
+
+const Bang::PlayerPositionVector PlayerPositions {
+  Utils::DrawArea {
+    {
+      static_cast<int32_t>(FirstCardToScreenLeftOffset),
+      static_cast<int32_t>(WindowHeight - BottomRowHeight - CardHeight),
+      0
+    },
+    {
+      static_cast<uint32_t>(::CardWidth),
+      static_cast<uint32_t>(::CardHeight),
+      Utils::LengthUnits::px
+    }
+  },
+  {
+    {
+      static_cast<int32_t>(WindowWidth - CardWidth),
+      static_cast<int32_t>(CardHeight),
+      0
+    },
+    {
+      static_cast<uint32_t>(::CardWidth),
+      static_cast<uint32_t>(::CardHeight),
+      Utils::LengthUnits::px
+    }
+  }
 };
 
 constexpr auto CardBundlesDirectoryPath = "./cardBundles";
 
-auto PrepareMainGameScreen() -> std::shared_ptr<Graphics::Screen>
+auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared_ptr<Graphics::Screen> &mainGameScreen, const Bang::GameState &gameState) -> void
 {
-  auto screen = std::make_shared<Graphics::Screen>(WindowWidth, WindowHeight);
-
   const auto &app = Bang::Application::Get();
-  auto *mouse = &(app.inputComponent->mouse);
-  // Static cast didn't work here and I'm not sure why.
-  dynamic_cast<Utils::IEventEmitter<Utils::MouseButtonEvent> *>(mouse)->RegisterHandler(screen);
-  dynamic_cast<Utils::IEventEmitter<Utils::MouseMovementEvent> *>(mouse)->RegisterHandler(screen);
-
-  return screen;
-}
-
-auto DrawGameState(const std::unique_ptr<Utils::Renderer>& renderer, std::shared_ptr<Graphics::Screen>& mainGameScreen, const Bang::GameState& gameState) -> void
-{
+  const auto &playerPositions = app.configComponent->PlayerPositions();
+  const auto colors = std::array<SDL_Color, 2>{
+    SDL_Color { 0, 255, 0, 255 },
+    SDL_Color { 0, 0, 255, 255 }
+  };
   for (auto playerIndex = 0u; playerIndex < gameState.players.size(); ++playerIndex)
   {
+    const auto &playerPosition = playerPositions[playerIndex];
     std::cerr << "Drawing player #" << playerIndex << " state." << std::endl;
-    const auto& player = gameState.players[playerIndex];
+    const auto &player = gameState.players[playerIndex];
     if (!player)
       throw Utils::Exception{ "Null player found when drawing the game state." };
 
-    const auto& cardsInHand = player->CardsInHand();
-    const auto& playerPosition = ::PlayerPositions[playerIndex];
-
-    std::cerr << "Player #" << playerIndex << " position: " << playerPosition.x << ", " << playerPosition.y << std::endl;
-
-    Graphics::CardCollapsingContainer cardCollapsingContainer{
-      mainGameScreen.get(),
-      Utils::DrawArea {
-        {static_cast<int32_t>(::FirstCardToScreenLeftOffset), static_cast<int32_t>(playerPosition.y), 0},
-        static_cast<int32_t>(::MaxCardsNextToEachOtherWithoutOverlapping * ::CardWidth),
-        static_cast<int32_t>(::CardHeight)} };
-
-    const auto cardCollapsingContainerDrawArea = cardCollapsingContainer.GetDrawArea();
-    std::cerr << std::format("CardCollapsingContainer drawArea: {}", ToString(cardCollapsingContainerDrawArea)) << std::endl;
-
-    std::vector<Graphics::Positionable> positionables;
-    positionables.reserve(10);
-    for (auto cardIndex = 0u; cardIndex < cardsInHand.size(); ++cardIndex)
-    {
-      positionables.emplace_back(&cardCollapsingContainer, Utils::DrawArea{ {}, static_cast<int32_t>(::CardWidth), static_cast<int32_t>(::CardHeight) });
-    }
-
-    auto cardIndex = 0u;
-    std::ranges::for_each(positionables, [&cardIndex, &renderer, &cardsInHand](const Graphics::Positionable& positionable)
-      {
-        const auto& cardPosition = Utils::DrawAreaToSDLRect(positionable.GetAbsoluteDrawArea());
-        std::cerr << "Card #" << cardIndex << " position: " << cardPosition.x << ", " << cardPosition.y << ", " << cardPosition.w << ", " << cardPosition.h << std::endl;
-        renderer->RenderTexture(cardsInHand[cardIndex]->Texture(), nullptr, &cardPosition);
-        std::cerr << " Card #" << cardIndex++ << " drawn." << std::endl;
-      });
-
     std::cerr << "Drawing player #" << playerIndex << "'s character." << std::endl;
-    auto* character = player->Character();
+    const auto character = player->Character();
     if (!character)
     {
-      std::cerr << "No character available." << std::endl;
-      return;
+      std::cerr << "Character is not available; continue" << std::endl;
+      continue;
     }
 
-    const SDL_Rect characterPosition{
-      playerPosition.x,
-      playerPosition.y - static_cast<int32_t>(::CardHeight),
-      static_cast<int32_t>(::CardWidth),
-      static_cast<int32_t>(::CardHeight)
+    const auto characterDrawArea =
+      character->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea();
+    const auto characterPosition = SDL_Rect {
+        characterDrawArea.position.x,
+        characterDrawArea.position.y,
+        characterDrawArea.size.x,
+        characterDrawArea.size.y
     };
 
-    std::cerr << "Character position: " << characterPosition.x << ", " << characterPosition.y << ", " << characterPosition.w << ", " << characterPosition.h << std::endl;
     renderer->RenderTexture(character->Texture(), nullptr, &characterPosition);
-    std::cerr << "Drawing player #" << playerIndex << "'s character finished." << std::endl;
+    for (const auto& card : player->CardsInHand())
+    {
+      const auto cardDrawArea =
+        card->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea();
+      const auto cardPosition = SDL_Rect{
+        cardDrawArea.position.x,
+        cardDrawArea.position.y,
+        cardDrawArea.size.x,
+        cardDrawArea.size.y
+      };
+
+      std::cerr << "player index: " << playerIndex << " card position: " << cardPosition.x << ", " << cardPosition.y << std::endl;
+      auto debugRectPos = cardPosition;
+      renderer->SetDrawColor(colors[playerIndex]);
+      renderer->DrawRectangle(debugRectPos);
+      renderer->RenderTexture(card->Texture(), nullptr, &cardPosition);
+    }
+
+    for (const auto& card : player->CardsOnTable())
+    {
+      const auto cardDrawArea =
+        card->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea();
+      const auto cardPosition = SDL_Rect{
+        cardDrawArea.position.x,
+        cardDrawArea.position.y,
+        cardDrawArea.size.x,
+        cardDrawArea.size.y
+      };
+
+      renderer->RenderTexture(card->Texture(), nullptr, &cardPosition);
+    }
   }
 }
 
@@ -117,26 +135,29 @@ auto main() -> int
 {
   try
   {
-    const auto &application = Bang::Application::Get();
-    auto &window = application.renderingComponent->window;
-    std::cout << "Creating window." << std::endl;
-    window = std::unique_ptr<Utils::Window> {
-      new Utils::Window {::WindowWidth, ::WindowHeight, "Bang"}};
-
-    const auto &renderer = window->renderer;
+    auto &application = Bang::Application::Get();
+    application.renderingComponent->Init(
+      ::WindowWidth,
+      ::WindowHeight,
+      "Bang",
+      application.inputComponent);
+    application.configComponent->Init(
+      ::PlayerPositions,
+      { static_cast<uint32_t>(::CardWidth), static_cast<uint32_t>(::CardHeight), Utils::LengthUnits::px },
+      ::FirstCardToScreenLeftOffset,
+      ::MaxCardsNextToEachOtherWithoutOverlapping);
 
     // Loading the card banks requires a renderer.
     std::cout << "Loading card banks." << std::endl;
     application.cardBankComponent->LoadAllBanks(::CardBundlesDirectoryPath);
 
-    const auto fontName = "./font.ttf";
     std::cout << "Loading font." << std::endl;
-    auto *font = Utils::LoadFontFromFile(fontName, 180u);
+    auto *font = Utils::LoadFontFromFile(::FontName, 180u);
     if(!font)
       throw Utils::Exception {""};
 
-    std::cout << "Adding font to content storage: " << fontName << " " << font << std::endl;
-    application.contentStorageComponent->AddFont(fontName, font);
+    std::cout << "Adding font to content storage: " << ::FontName << " " << font << std::endl;
+    application.contentStorageComponent->AddFont(::FontName, font);
 
     std::cout << "Creating state manager with CreatePlayers initial state." << std::endl;
     Bang::StateManager stateManager {
@@ -144,13 +165,8 @@ auto main() -> int
 
     Bang::GameState gameState;
 
-    // TODO: Remove the temporary prepare screen hack.
-    std::cerr
-      << "Preparing screen. !!!ATTENTION: THIS IS A TEMPORARY SOLUTION. REWORK ASAP"
-      << std::endl;
-    auto screen = ::PrepareMainGameScreen();
-
     SDL_Event event {};
+    auto &renderer = application.renderingComponent->window->renderer;
     while(event.type != SDL_QUIT)
     {
       std::cerr << "Polling events." << std::endl;
@@ -200,7 +216,7 @@ auto main() -> int
       std::cerr << "Renderer cleared." << std::endl;
 
       std::cerr << "Drawing the game state." << std::endl;
-      ::DrawGameState(renderer, screen, gameState);
+      ::DrawGameState(renderer, application.renderingComponent->screen, gameState);
       std::cerr << "Drawing finished" << std::endl;
 
       std::cerr << "Presenting the rendered frame." << std::endl;

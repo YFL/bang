@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CardBankComponent.h>
+#include <ConfigComponent.h>
 #include <ContentStorageComponent.h>
 #include <InputComponent.h>
 #include <RenderingComponent.h>
@@ -39,6 +40,7 @@ private:
 
 public:
   const std::unique_ptr<CardBankComponent> cardBankComponent = nullptr;
+  const std::unique_ptr<ConfigComponent> configComponent = nullptr;
   const std::unique_ptr<ContentStorageComponent> contentStorageComponent = nullptr;
   const std::unique_ptr<InputComponent> inputComponent = nullptr;
   const std::unique_ptr<RenderingComponent> renderingComponent = nullptr;

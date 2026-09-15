@@ -2,60 +2,61 @@
 
 #include <Exception.h>
 
-#include <cassert>
+#include <ranges>
 
 namespace Graphics
 {
 
 Positionable::Positionable(Positionable &&move) noexcept
+  : Component { std::move(move) }
 {
   *this = std::move(move);
 }
 
 auto Positionable::operator=(Positionable &&move) noexcept -> Positionable &
 {
-  move._parent->RemoveChild(&move);
+  move._parent.lock()->RemoveChild(move.Id);
   _parent = std::move(move._parent);
-  move._parent = nullptr;
+  move._parent = {};
   _drawArea = std::move(move._drawArea);
-  _parent->AddChild(this);
+  if(!_parent.expired())
+    _parent.lock()->AddChild(shared_from_this());
 
   return *this;
 }
 
 auto Positionable::operator==(const Positionable &other) const -> bool
 {
-  return Id == other.Id
-    && GetAbsoluteDrawArea() == other.GetAbsoluteDrawArea();
+  return Id == other.Id && GetAbsoluteDrawArea() == other.GetAbsoluteDrawArea();
 }
 
-auto Positionable::AddChild(Positionable *child) -> void
+auto Positionable::AddChild(const std::shared_ptr<Positionable> &child) -> void
 {
   _children.push_back(child);
 }
 
-auto Positionable::RemoveChild(Positionable *child) -> void
+auto Positionable::RemoveChild(const xg::Guid &childId) -> void
 {
-  const auto &it = std::remove_if(_children.begin(), _children.end(), [child](Positionable *item)
-  {
-    return child->Id == item->Id;
-  });
+  const auto &[deleteFirst, deleteLast] = std::ranges::remove_if(
+    _children,
+    [childId](const PositionableWeakPtr &item)
+    {
+      const auto itemLocked = item.lock();
+      return itemLocked && childId == itemLocked->Id;
+    });
 
-  if(it != _children.end())
-    _children.erase(it, _children.end());
+  _children.erase(deleteFirst, deleteLast);
 }
 
-auto Positionable::SwitchParent(Positionable *parent) -> void
+auto Positionable::SwitchParent(PositionablePointer &parent) -> void
 {
-  if(_parent == parent)
-    return;
-
-  if(_parent)
-    _parent->RemoveChild(this);
+  auto parentLocked = _parent.lock();
+  if(parentLocked)
+    parentLocked->RemoveChild(Id);
 
   _parent = parent;
-  if(_parent)
-    _parent->AddChild(this);
+  if(!_parent.expired())
+    _parent.lock()->AddChild(shared_from_this());
 }
 
 auto Positionable::SetPosition(const Utils::Position &position) -> void

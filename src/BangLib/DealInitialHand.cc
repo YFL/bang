@@ -1,10 +1,13 @@
 #include <DealInitialHand.h>
 
 #include <Application.h>
+#include <CardCollapsingHoveredHighlightingContainer.h>
 #include <Exception.h>
 #include <GameState.h>
 #include <PlayCard.h>
 #include <PlayPhase.h>
+
+#include <Positionable.h>
 
 #include <format>
 
@@ -28,7 +31,7 @@ auto GenerateHandForPlayer(const Bang::PlayerPointer &player) -> void
   if(!font)
     throw Utils::Exception {"Null font found when generating a hand for a player."};
 
-  constexpr auto suit {Bang::Suit::Diamond};
+  constexpr auto suit {Bang::Suite::Diamond};
   constexpr auto cardNumber {Bang::CardNumber::Ace};
   const auto name = std::format("PlayCard {} {}", ToString(suit), ToString(cardNumber));
   // TODO: Check if the texture already exists in the content storage before creating it.
@@ -39,6 +42,58 @@ auto GenerateHandForPlayer(const Bang::PlayerPointer &player) -> void
     cards.emplace_back(new Bang::PlayCard { "PlayCard", texture, cardNumber, suit });
 
   player->CardsInHand(cards);
+}
+
+auto AddHandsToScreen(const Bang::PlayerPointerVector &players) -> void
+{
+  if (players.empty()) return;
+  const auto &app = Bang::Application::Get();
+  const auto playerPositions = app.configComponent->PlayerPositions();
+  const auto &screen = app.renderingComponent->screen;
+  const auto cardSize = app.configComponent->CardSize();
+  for (auto playerIndex = 0u; playerIndex < players.size(); ++playerIndex)
+  {
+    const auto &player = players[playerIndex];
+
+    const auto &cardsInHand = player->CardsInHand();
+    const auto playerPosition = playerPositions[playerIndex];
+
+    std::cerr << "Player #" << playerIndex << " position: " << playerPosition.position.x << ", "
+      << playerPosition.position.y << std::endl;
+
+    const auto cardSize = app.configComponent->CardSize();
+    const auto converter = Utils::ConvertLengthUnit(cardSize.unit, Utils::LengthUnits::px);
+    const auto cardCollapsingContainerY = playerPosition.position.y;
+
+    auto cardCollapsingContainer =
+      std::make_shared<Graphics::CardCollapsingHoveredHighlightingContainer>(
+        screen,
+        Utils::DrawArea
+        {
+          {
+            static_cast<int32_t>(app.configComponent->FirstCardToScreenLeftOffset()),
+            static_cast<int32_t>(cardCollapsingContainerY),
+            0
+          },
+          {
+            static_cast<int32_t>(
+            app.configComponent->MaxCardsNextToEachOtherWithoutOverlapping() * cardSize.x * converter),
+            static_cast<int32_t>(cardSize.y),
+            Utils::LengthUnits::px
+          }
+        });
+
+    auto positionableScreen = std::static_pointer_cast<Graphics::Positionable>(screen);
+    cardCollapsingContainer->SwitchParent(positionableScreen);
+
+    std::cerr << "Container draw area: " << Utils::ToString(cardCollapsingContainer->GetDrawArea()) << std::endl;
+    for (const auto& card : cardsInHand)
+    {
+      auto containerPositinable =
+        std::static_pointer_cast<Graphics::Positionable>(cardCollapsingContainer);
+      card->Entity()->Get<Graphics::Positionable>()->SwitchParent(containerPositinable);
+    }
+  }
 }
 
 } // namespace
@@ -53,6 +108,8 @@ auto DealInitialHand::Update(GameState &gameState) -> bool
   {
     GenerateHandForPlayer(player);
   }
+
+  AddHandsToScreen(gameState.players);
 
   return false;
 }

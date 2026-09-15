@@ -9,7 +9,7 @@ class DealInitialHand : public State<GameStates>
 {
 public:
   DealInitialHand() = default;
-  
+
 public:
   auto Update(GameState &gameState) -> bool override;
 
