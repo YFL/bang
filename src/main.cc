@@ -91,12 +91,7 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
     {
       const auto cardDrawArea =
         card->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea();
-      const auto cardPosition = SDL_Rect{
-        cardDrawArea.position.x,
-        cardDrawArea.position.y,
-        cardDrawArea.size.x,
-        cardDrawArea.size.y
-      };
+      const auto cardPosition = Utils::DrawAreaToSDLRect(cardDrawArea);
 
       std::cerr << "player index: " << playerIndex << " card position: " << cardPosition.x << ", " << cardPosition.y << std::endl;
       auto debugRectPos = cardPosition;
@@ -109,12 +104,7 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
     {
       const auto cardDrawArea =
         card->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea();
-      const auto cardPosition = SDL_Rect{
-        cardDrawArea.position.x,
-        cardDrawArea.position.y,
-        cardDrawArea.size.x,
-        cardDrawArea.size.y
-      };
+      const auto cardPosition = Utils::DrawAreaToSDLRect(cardDrawArea);
 
       renderer->RenderTexture(card->Texture(), nullptr, &cardPosition);
     }

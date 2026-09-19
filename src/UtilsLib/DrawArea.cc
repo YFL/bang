@@ -80,21 +80,22 @@ auto IsPointInDrawArea(
     << " area.position.y + area.size.y * conversion >= point.y: " << (area.position.y + area.size.y * conversion >= point.y)
     << std::endl;
   return area.position.x <= point.x
-    && area.position.x + area.size.x * conversion >= point.x
+    && area.position.x + area.size.x * area.zoom * conversion >= point.x
     && area.position.y <= point.y
-    && area.position.y + area.size.y * conversion >= point.y;
+    && area.position.y + area.size.y * area.zoom * conversion >= point.y;
 }
 
 auto ToString(const DrawArea& drawArea) -> std::string
 {
   return std::format(
-    "DrawArea: x: {} y: {} z: {} widht: {} height: {}, unit: {}",
+    "DrawArea: x: {} y: {} z: {} width: {} height: {}, unit: {}, zoom: {}",
     drawArea.position.x,
     drawArea.position.y,
     drawArea.position.z,
     drawArea.size.x,
     drawArea.size.y,
-    static_cast<int32_t>(drawArea.size.unit));
+    static_cast<int32_t>(drawArea.size.unit),
+    drawArea.zoom);
 }
 
 } // namespace Utils

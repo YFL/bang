@@ -15,6 +15,7 @@ struct DrawArea
 {
   Position position;
   TwoDSize size;
+  float zoom = 1.0f;
 };
 
 //! @brief Get the "absolute" draw area of b relative to a.
@@ -26,12 +27,13 @@ struct DrawArea
 //! @param b The draw area whose position we are interested in.
 //!   It's position should be relative to a.
 //! @return The absolute draw area of b with respect to a. The size of the
-//!   draw area is the size of b.
+//!   draw area is the size of b. The zoom of the draw area is a.zoom * b.zoom.
 inline auto operator+ (const DrawArea &a, const DrawArea &b) -> DrawArea
 {
   return {
     {a.position.x + b.position.x, a.position.y + b.position.y},
-    {b.size.x, b.size.y, b.size.unit}
+    {b.size.x, b.size.y, b.size.unit},
+    a.zoom * b.zoom
   };
 }
 
@@ -40,11 +42,17 @@ inline auto operator== (const DrawArea &a, const DrawArea &b) -> bool
 
 inline auto DoDrawAreasCollide(const DrawArea &a, const DrawArea &b, bool includeZ = false) -> bool;
 
+// TODO: Decide whether to include zoom in the calculation of whether one draw area fits inside another. For now, we will not include zoom in the calculation.
 inline auto DoesDrawAreaFitAnother(const DrawArea &fits, const DrawArea &toFit) -> bool;
 
 inline auto DrawAreaToSDLRect(const DrawArea &drawArea) -> SDL_Rect
 {
-  return { drawArea.position.x, drawArea.position.y, drawArea.size.x, drawArea.size.y };
+  return {
+    drawArea.position.x,
+    drawArea.position.y,
+    static_cast<int>(drawArea.size.x * drawArea.zoom),
+    static_cast<int>(drawArea.size.y * drawArea.zoom)
+  };
 }
 
 /**
