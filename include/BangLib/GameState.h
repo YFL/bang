@@ -8,12 +8,12 @@ namespace Bang
 struct GameState
 {
   PlayerPointerVector players;
-  CardPointerVector drawDeck;
-  CardPointerVector throwAwayDeck;
+  CardWeakPtrVector drawDeck;
+  CardWeakPtrVector throwAwayDeck;
   size_t currentPlayer;
 };
 
-auto CardsOnTheTable(const GameState &gameState) -> const std::vector<const CardPointerVector *>;
-auto CardsInAllHands(const GameState &gameState) -> const std::vector<const CardPointerVector *>;
+auto CardsOnTheTable(const GameState &gameState) -> const std::vector<const CardWeakPtrVector *>;
+auto CardsInAllHands(const GameState &gameState) -> const std::vector<const CardWeakPtrVector *>;
 
 } // namespace Bang

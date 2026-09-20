@@ -1,3 +1,4 @@
+GENERATE_STATE(GameStates, CreateDeck)
 GENERATE_STATE(GameStates, CreatePlayers)
 GENERATE_STATE(GameStates, GenerateCharacters)
 GENERATE_STATE(GameStates, DealInitialHand)

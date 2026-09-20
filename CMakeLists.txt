@@ -63,7 +63,7 @@ find_package(crossguid REQUIRED)
 
 collect_imported_dll_targets(3RD_PARTY_IMPORTED_TARGETS)
 
-file(GLOB BangLibSources src/BangLib/*.cc include/BangLib/*.h)
+file(GLOB BangLibSources src/BangLib/*.cc include/BangLib/*.h include/BangLib/*.inc)
 add_library(Bang STATIC ${BangLibSources})
 target_include_directories(Bang PUBLIC "include/BangLib")
 target_include_directories(Bang PUBLIC "include/GraphicsLib")

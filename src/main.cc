@@ -1,5 +1,5 @@
 #include <BangLib/Application.h>
-#include <BangLib/CreatePlayers.h>
+#include <BangLib/CreateDeck.h>
 #include <BangLib/GameState.h>
 #include <BangLib/GameStates.h>
 #include <BangLib/StateManager.h>
@@ -76,7 +76,7 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
       throw Utils::Exception{ "Null player found when drawing the game state." };
 
     std::cerr << "Drawing player #" << playerIndex << "'s character." << std::endl;
-    const auto character = player->Character();
+    const auto character = player->Character().lock();
     if (!character)
     {
       std::cerr << "Character is not available; continue" << std::endl;
@@ -87,8 +87,15 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
       character->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea());
     renderer->RenderTexture(character->Texture(), nullptr, &characterPosition);
 
-    for (const auto& card : player->CardsInHand())
+    for (const auto& cardWeakPtr : player->CardsInHand())
     {
+      const auto card = cardWeakPtr.lock();
+      if (!card)
+      {
+        std::cerr << "Card is not available; continue" << std::endl;
+        continue;
+      }
+
       const auto cardDrawArea =
         card->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea();
       const auto cardPosition = Utils::DrawAreaToSDLRect(cardDrawArea);
@@ -100,8 +107,15 @@ auto DrawGameState(const std::unique_ptr<Utils::Renderer> &renderer, std::shared
       renderer->RenderTexture(card->Texture(), nullptr, &cardPosition);
     }
 
-    for (const auto& card : player->CardsOnTable())
+    for (const auto& cardWeakPtr : player->CardsOnTable())
     {
+      const auto card = cardWeakPtr.lock();
+      if (!card)
+      {
+        std::cerr << "Card is not available; continue" << std::endl;
+        continue;
+      }
+
       const auto cardDrawArea =
         card->Entity()->Get<Graphics::Positionable>()->GetAbsoluteDrawArea();
       const auto cardPosition = Utils::DrawAreaToSDLRect(cardDrawArea);
@@ -145,7 +159,7 @@ auto main() -> int
 
     std::cout << "Creating state manager with CreatePlayers initial state." << std::endl;
     Bang::StateManager stateManager {
-      std::unique_ptr<Bang::State<GameStates>> {new Bang::CreatePlayers}};
+      std::unique_ptr<Bang::State<GameStates>> {new Bang::CreateDeck}};
 
     Bang::GameState gameState;
 

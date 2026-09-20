@@ -13,8 +13,9 @@ namespace
 auto GenerateCharacterForPlayer(const Bang::PlayerPointer &player) -> void
 {
   const auto &characterCards = Bang::Application::Get().cardBankComponent->characterCards;
-  std::cout << "characterCards number: " << characterCards.size() << std::endl;
+  std::cout << "characterCards count: " << characterCards.size() << std::endl;
   player->Character(characterCards[0]);
+
 }
 
 auto AddCharacterToScreen(
@@ -22,7 +23,7 @@ auto AddCharacterToScreen(
   const Utils::DrawArea &playerPosition,
   std::shared_ptr<Graphics::Screen> &screen) -> void
 {
-  auto character = player->Character();
+  auto character = player->Character().lock();
   if (!character)
   {
     std::cerr << "No character available." << std::endl;
@@ -38,8 +39,8 @@ auto AddCharacterToScreen(
       playerPosition.position.x,
       playerPosition.position.y - static_cast<int32_t>(cardSize.y * converter)
     });
-
-  screen->AddChild(characterPositionable);
+  auto screenPositionable = std::static_pointer_cast<Graphics::Positionable>(screen);
+  characterPositionable->SwitchParent(screenPositionable);
 }
 
 } // namespace

@@ -49,5 +49,7 @@ private:
 
 using CardPointer = std::shared_ptr<Card>;
 using CardPointerVector = std::vector<CardPointer>;
+using CardWeakPtr = std::weak_ptr<Card>;
+using CardWeakPtrVector = std::vector<CardWeakPtr>;
 
 } // namespace Bang

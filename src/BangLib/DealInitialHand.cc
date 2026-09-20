@@ -4,7 +4,6 @@
 #include <CardCollapsingHoveredHighlightingContainer.h>
 #include <Exception.h>
 #include <GameState.h>
-#include <PlayCard.h>
 #include <PlayPhase.h>
 
 #include <Positionable.h>
@@ -16,30 +15,15 @@
 namespace
 {
 
-auto GenerateHandForPlayer(const Bang::PlayerPointer &player) -> void
+auto GenerateHandForPlayer(const Bang::PlayerPointer &player, Bang::GameState &gameState) -> void
 {
-  const auto &contentStorageComponent = Bang::Application::Get().contentStorageComponent;
-  const auto &renderer = Bang::Application::Get().renderingComponent->window->renderer;
-  if(!renderer)
-    throw Utils::Exception {"No renderer available when generating a hand for a player."};
 
-  const auto &fonts = Bang::Application::Get().contentStorageComponent->Fonts();
-  if(fonts.empty())
-    throw Utils::Exception {"No fonts available when generating a hand for a player."};
-
-  auto *font = fonts.cbegin()->second;
-  if(!font)
-    throw Utils::Exception {"Null font found when generating a hand for a player."};
-
-  constexpr auto suit {Bang::Suite::Diamond};
-  constexpr auto cardNumber {Bang::CardNumber::Ace};
-  const auto name = std::format("PlayCard {} {}", ToString(suit), ToString(cardNumber));
-  // TODO: Check if the texture already exists in the content storage before creating it.
-  auto *texture = renderer->TextToTexture(font, name, SDL_Color {255, 0, 0, 0});
-  contentStorageComponent->AddTexture(name, texture);
-  Bang::CardPointerVector cards;
+  Bang::CardWeakPtrVector cards;
   for (auto i = 0u; i < 10; ++i)
-    cards.emplace_back(new Bang::PlayCard { "PlayCard", texture, cardNumber, suit });
+  {
+    cards.emplace_back((gameState.drawDeck.back()));
+    gameState.drawDeck.pop_back();
+  }
 
   player->CardsInHand(cards);
 }
@@ -50,6 +34,7 @@ auto AddHandsToScreen(const Bang::PlayerPointerVector &players) -> void
   const auto &app = Bang::Application::Get();
   const auto playerPositions = app.configComponent->PlayerPositions();
   const auto &screen = app.renderingComponent->screen;
+  auto positionableScreen = std::static_pointer_cast<Graphics::Positionable>(screen);
   const auto cardSize = app.configComponent->CardSize();
   for (auto playerIndex = 0u; playerIndex < players.size(); ++playerIndex)
   {
@@ -83,17 +68,17 @@ auto AddHandsToScreen(const Bang::PlayerPointerVector &players) -> void
           }
         });
 
-    auto positionableScreen = std::static_pointer_cast<Graphics::Positionable>(screen);
     cardCollapsingContainer->SwitchParent(positionableScreen);
     dynamic_cast<Utils::IEventEmitter<Utils::MouseMovementEvent> *>(&app.inputComponent->mouse)
       ->RegisterHandler(cardCollapsingContainer);
 
     std::cerr << "Container draw area: " << Utils::ToString(cardCollapsingContainer->GetDrawArea()) << std::endl;
-    for (const auto& card : cardsInHand)
+    for (const auto& cardWeakPtr : cardsInHand)
     {
-      auto containerPositinable =
+      const auto card = cardWeakPtr.lock();
+      auto containerPositionable =
         std::static_pointer_cast<Graphics::Positionable>(cardCollapsingContainer);
-      card->Entity()->Get<Graphics::Positionable>()->SwitchParent(containerPositinable);
+      card->Entity()->Get<Graphics::Positionable>()->SwitchParent(containerPositionable);
     }
   }
 }
@@ -108,7 +93,7 @@ auto DealInitialHand::Update(GameState &gameState) -> bool
   std::cerr << "DealInitialHand" << std::endl;
   for(const auto &player : gameState.players)
   {
-    GenerateHandForPlayer(player);
+    GenerateHandForPlayer(player, gameState);
   }
 
   AddHandsToScreen(gameState.players);

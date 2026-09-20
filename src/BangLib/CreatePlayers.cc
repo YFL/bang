@@ -26,7 +26,7 @@ auto CreatePlayers::Update(GameState &gameState) -> bool
 
 template<>
 auto GetNextState<GameStates, GameStates::CreatePlayers>(
-  const StatePointer<GameStates> &currentState, 
+  const StatePointer<GameStates> &currentState,
   const GameState &gameState)
   -> StatePointer<GameStates>
 {

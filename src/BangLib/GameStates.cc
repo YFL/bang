@@ -12,14 +12,14 @@ auto GetNextState(const StatePointer<GameStates> &state, const GameState &gameSt
         stateMachineName,\
         DOUBLE_COLON_CONCAT_HELPER(stateMachineName, stateName)>\
         (state, gameState);
-  
+
   switch(state->Type())
   {
     #include <GameStates.inc>
     default:
       return nullptr;
   }
-  
+
   #undef GENERATE_STATE
 }
 
