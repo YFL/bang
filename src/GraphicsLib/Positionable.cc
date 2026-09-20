@@ -64,4 +64,14 @@ auto Positionable::SetPosition(const Utils::Position &position) -> void
   _drawArea.position = position;
 }
 
+auto Positionable::SetSize(const Utils::TwoDSize &size) -> void
+{
+  _drawArea.size = size;
+}
+
+auto Positionable::SetZoom(float zoom) -> void
+{
+  _drawArea.zoom = zoom;
+}
+
 } // namespace Graphics

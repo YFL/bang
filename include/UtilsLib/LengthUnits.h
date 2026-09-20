@@ -16,12 +16,12 @@ enum class LengthUnits : int32_t
   px = 2
 };
 
-inline auto ConvertLengthUnit(LengthUnits from, LengthUnits to) -> int32_t {
+inline auto ConvertLengthUnit(LengthUnits from, LengthUnits to) -> float {
   if (from == to)
     return 1;
   const int32_t magnitude =
     std::powf(10, static_cast<int32_t>(from)) * std::powf(10, static_cast<int32_t>(to));
-  return to > from ? 1 / magnitude : magnitude;
+  return to > from ? 1.f / magnitude : magnitude;
 }
 
 } // namespace Utils

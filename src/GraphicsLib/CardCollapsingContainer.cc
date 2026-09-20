@@ -14,14 +14,17 @@ auto CardCollapsingContainer::AddCard(const PositionablePointer &child) -> void
   // Move new card to the right next to the rightmost card - without any overlapping (basic case).
   child->SetPosition({static_cast<int32_t>((_children.size() - 1) * childWidth), 0});
 
-  const auto maxCardsNextToEachOtherWithoutOverlapping = _drawArea.size.x / childWidth;
+  const auto maxCardsNextToEachOtherWithoutOverlapping = std::max(1.f, static_cast<float>(_drawArea.size.x) / childWidth);
   if (_children.size() > maxCardsNextToEachOtherWithoutOverlapping)
   {
+    const auto absoluteArea = GetAbsoluteDrawArea();
     // Overflow handling
     // When there are more cards in the container than it can position next to each other without
     // overlapping, we calculate the offset between the cards based on the with of the container
     // and the number of stored cards.
-    const auto horizontalOffsetBetweenCards = childWidth * maxCardsNextToEachOtherWithoutOverlapping / _children.size();
+    const auto horizontalOffsetBetweenCards = _children.size() != 1
+      ? (absoluteArea.size.x * absoluteArea.zoom - childWidth) / (_children.size() - 1)
+      : 0;
 
     std::cerr << "Horizontal offset between cards: " << horizontalOffsetBetweenCards << std::endl;
 

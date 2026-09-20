@@ -34,7 +34,7 @@ protected:
         return handler.expired();
       });
     if (eraseStart != _handlers.end())
-      std::cerr 
+      std::cerr
         << std::format("Number of handlers to be removed {}", std::distance(eraseStart, eraseEnd))
         << std::endl;
 

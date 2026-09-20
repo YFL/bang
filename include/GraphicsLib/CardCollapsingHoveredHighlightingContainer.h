@@ -21,6 +21,9 @@ public:
 
 public:
   auto Handle(const Utils::MouseMovementEvent &event) -> void override;
+
+private:
+  PositionableWeakPtr _zoomedChild = {};
 };
 
 } // namespace Graphics

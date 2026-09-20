@@ -1,6 +1,7 @@
 #include <DrawArea.h>
 
 #include <format>
+#include <iostream>
 
 namespace Utils
 {
@@ -14,13 +15,19 @@ auto DoDrawAreasCollide(const DrawArea &a, const DrawArea &b, bool includeZ) -> 
   if (a.size.unit != Utils::LengthUnits::px)
   {
     const auto conversion = Utils::ConvertLengthUnit(a.size.unit, Utils::LengthUnits::px);
-    newA.size = { a.size.x * conversion, a.size.y * conversion };
+    newA.size = {
+      static_cast<int32_t>(a.size.x * conversion),
+      static_cast<int32_t>(a.size.y * conversion)
+    };
   }
 
   if (b.size.unit != Utils::LengthUnits::px)
   {
     const auto conversion = Utils::ConvertLengthUnit(b.size.unit, Utils::LengthUnits::px);
-    newB.size = { b.size.x * conversion, b.size.y * conversion };
+    newB.size = {
+      static_cast<int32_t>(b.size.x * conversion),
+      static_cast<int32_t>(b.size.y * conversion)
+    };
   }
 
   return !(newA.position.x + newA.size.x < newB.position.x
@@ -35,13 +42,19 @@ inline auto DoesDrawAreaFitAnother(const DrawArea &fits, const DrawArea &toFit) 
   if (fits.size.unit != Utils::LengthUnits::px)
   {
     const auto conversion = Utils::ConvertLengthUnit(fits.size.unit, Utils::LengthUnits::px);
-    newFits.size = { fits.size.x * conversion, fits.size.y * conversion };
+    newFits.size = {
+      static_cast<int32_t>(fits.size.x * conversion),
+      static_cast<int32_t>(fits.size.y * conversion)
+    };
   }
 
   if (toFit.size.unit != Utils::LengthUnits::px)
   {
     const auto conversion = Utils::ConvertLengthUnit(toFit.size.unit, Utils::LengthUnits::px);
-    newToFit.size = { toFit.size.x * conversion, toFit.size.y * conversion };
+    newToFit.size = {
+      static_cast<int32_t>(toFit.size.x * conversion),
+      static_cast<int32_t>(toFit.size.y * conversion)
+    };
   }
 
   return newFits.position.x >= newToFit.position.x
@@ -58,26 +71,31 @@ auto IsPointInDrawArea(
   if(includeZ && area.position.z != point.z)
     return false;
 
-  const auto conversion = area.size.unit == Utils::LengthUnits::px
-    ? 1
-    : Utils::ConvertLengthUnit(area.size.unit, Utils::LengthUnits::px);
-
+  const auto conversion = Utils::ConvertLengthUnit(area.size.unit, Utils::LengthUnits::px);
+  std::cerr << "conversion: " << conversion << std::endl;
+  std::cerr << "area: " << ToString(area) << " point: x: " << point.x << " y: " << point.y << std::endl;
+  std::cerr << "area.position.x <= point.x: " << (area.position.x <= point.x)
+    << " area.position.x + area.size.x * conversion >= point.x: " << (area.position.x + area.size.x * conversion >= point.x)
+    << " area.position.y <= point.y: " << (area.position.y <= point.y)
+    << " area.position.y + area.size.y * conversion >= point.y: " << (area.position.y + area.size.y * conversion >= point.y)
+    << std::endl;
   return area.position.x <= point.x
-    && area.position.x + area.size.x * conversion >= point.x
+    && area.position.x + area.size.x * area.zoom * conversion >= point.x
     && area.position.y <= point.y
-    && area.position.y + area.size.y * conversion >= point.y;
+    && area.position.y + area.size.y * area.zoom * conversion >= point.y;
 }
 
 auto ToString(const DrawArea& drawArea) -> std::string
 {
   return std::format(
-    "DrawArea: x: {} y: {} z: {} widht: {} height: {}, unit: {}",
+    "DrawArea: x: {} y: {} z: {} width: {} height: {}, unit: {}, zoom: {}",
     drawArea.position.x,
     drawArea.position.y,
     drawArea.position.z,
     drawArea.size.x,
     drawArea.size.y,
-    static_cast<int32_t>(drawArea.size.unit));
+    static_cast<int32_t>(drawArea.size.unit),
+    drawArea.zoom);
 }
 
 } // namespace Utils

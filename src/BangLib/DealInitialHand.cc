@@ -85,6 +85,8 @@ auto AddHandsToScreen(const Bang::PlayerPointerVector &players) -> void
 
     auto positionableScreen = std::static_pointer_cast<Graphics::Positionable>(screen);
     cardCollapsingContainer->SwitchParent(positionableScreen);
+    dynamic_cast<Utils::IEventEmitter<Utils::MouseMovementEvent> *>(&app.inputComponent->mouse)
+      ->RegisterHandler(cardCollapsingContainer);
 
     std::cerr << "Container draw area: " << Utils::ToString(cardCollapsingContainer->GetDrawArea()) << std::endl;
     for (const auto& card : cardsInHand)

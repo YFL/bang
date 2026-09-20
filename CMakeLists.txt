@@ -42,7 +42,7 @@ message(STATUS "crossguid_DIR: ${crossguid_DIR}")
 # Function to capture new imported targets created by find_package
 function(collect_imported_dll_targets out_var)
   get_directory_property(all_targets IMPORTED_TARGETS)
-    
+
   set(dll_targets)
   foreach(target IN LISTS all_targets)
     get_target_property(target_type ${target} TYPE)
@@ -124,7 +124,7 @@ if(WIN32)
     if(TARGET ${target})
       # Check target type to prevent errors on INTERFACE or STATIC libraries
       get_target_property(target_type ${target} TYPE)
-        
+
       if(target_type STREQUAL "SHARED_LIBRARY" OR target_type STREQUAL "UNKNOWN_LIBRARY")
         list(APPEND COPY_COMMANDS
           COMMAND ${CMAKE_COMMAND} -E copy_if_different
