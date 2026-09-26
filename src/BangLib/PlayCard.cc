@@ -12,7 +12,11 @@ PlayCard::PlayCard(
   const Bang::Suite suite)
   : Card{ name, texture, Application::Get().configComponent->CardSize()}
 {
-  Entity()->AddComponent<PlayCardComponent>(cardNumber, suite);
+  Utils::ComponentPointer playCardComponent = std::make_shared<PlayCardComponent>(
+    Entity(),
+    cardNumber,
+    suite);
+  Entity()->AddComponent<PlayCardComponent>(playCardComponent);
 }
 
 } // namespace Bang

@@ -8,7 +8,7 @@ namespace Utils
 {
 
 /**
- Size in 2 dimensions [cm].
+ Size in 2 dimensions.
 */
 struct TwoDSize
 {
@@ -36,6 +36,18 @@ inline auto operator*(const TwoDSize &l, const NumericType n) -> TwoDSize
   newSize.y *= n;
 
   return newSize;
+}
+
+inline auto ConvertTo(const TwoDSize &size, LengthUnits to) -> TwoDSize
+{
+  if (size.unit == to)
+    return size;
+  auto converter = ConvertLengthUnit(size.unit, to);
+  return TwoDSize{
+    static_cast<int32_t>(size.x * converter),
+    static_cast<int32_t>(size.y * converter),
+    to
+  };
 }
 
 } // namespace Utils

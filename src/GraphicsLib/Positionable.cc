@@ -15,7 +15,8 @@ Positionable::Positionable(Positionable &&move) noexcept
 
 auto Positionable::operator=(Positionable &&move) noexcept -> Positionable &
 {
-  move._parent.lock()->RemoveChild(move.Id);
+  if (!move._parent.expired())
+    move._parent.lock()->RemoveChild(move.Id);
   _parent = std::move(move._parent);
   move._parent = {};
   _drawArea = std::move(move._drawArea);

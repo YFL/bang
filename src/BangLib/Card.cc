@@ -19,7 +19,11 @@ Card::Card(const std::string &name, SDL_Texture *texture, const Utils::TwoDSize 
   if(name.empty())
     throw Utils::Exception {"Invalid name"};
 
-  _entity->AddComponent<Graphics::Positionable>(nullptr, Utils::DrawArea{{0, 0, 0}, cardSize});
+  Utils::ComponentPointer positionable = std::make_shared<Graphics::Positionable>(
+    _entity,
+    nullptr,
+    Utils::DrawArea{{0, 0, 0}, cardSize});
+  _entity->AddComponent<Graphics::Positionable>(positionable);
 }
 
 } // namespace Bang

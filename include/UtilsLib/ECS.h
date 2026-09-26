@@ -72,13 +72,13 @@ public:
   //! Since every component has to have a parent, which is the first parameter into the constructor
   //! this function provides it when creating the component, so the parent argument for the
   //! component constructor MUST NOT be provided when calling this function.
-  template <typename ComponentT, typename ...Args>
-  auto AddComponent(Args &&...args) -> void
+  template <typename ComponentT>
+  auto AddComponent(const ComponentPointer &component) -> void
   {
     _ownedComponents.insert(
       {
         ComponentId<ComponentT>(),
-        ComponentPointer{ new ComponentT{ shared_from_this(), std::forward<Args>(args)... } }
+        component
       });
   }
 

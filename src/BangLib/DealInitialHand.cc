@@ -9,7 +9,6 @@
 #include <Positionable.h>
 
 #include <format>
-
 #include <iostream>
 
 namespace
@@ -17,13 +16,9 @@ namespace
 
 auto GenerateHandForPlayer(const Bang::PlayerPointer &player, Bang::GameState &gameState) -> void
 {
-
   Bang::CardWeakPtrVector cards;
   for (auto i = 0u; i < 10; ++i)
-  {
-    cards.emplace_back((gameState.drawDeck.back()));
-    gameState.drawDeck.pop_back();
-  }
+    cards.emplace_back(gameState.drawDeck->GetCard());
 
   player->CardsInHand(cards);
 }

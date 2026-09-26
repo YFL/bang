@@ -42,5 +42,5 @@ private:
   std::unordered_map<std::string, SDL_Texture *> _textures;
 
 };
-  
+
 } // namespace Bang

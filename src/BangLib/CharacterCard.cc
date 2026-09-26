@@ -12,7 +12,11 @@ CharacterCard::CharacterCard(
   const uint32_t maxLives)
   : Card {name, texture, Application::Get().configComponent->CardSize()}
 {
-  Entity()->AddComponent<CharacterCardComponent>(description, maxLives);
+  Utils::ComponentPointer characterCardComponent = std::make_shared<CharacterCardComponent>(
+    Entity(),
+    description,
+    maxLives);
+  Entity()->AddComponent<CharacterCardComponent>(characterCardComponent);
 }
 
 } // namespace Bang

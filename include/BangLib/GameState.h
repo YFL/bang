@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Deck.h>
 #include <Player.h>
 
 namespace Bang
@@ -7,10 +8,10 @@ namespace Bang
 
 struct GameState
 {
-  PlayerPointerVector players;
-  CardWeakPtrVector drawDeck;
-  CardWeakPtrVector throwAwayDeck;
-  size_t currentPlayer;
+  PlayerPointerVector players = {};
+  DeckPointer drawDeck = std::make_shared<Deck>();
+  DeckPointer throwAwayDeck = std::make_shared<Deck>();
+  size_t currentPlayer = {};
 };
 
 auto CardsOnTheTable(const GameState &gameState) -> const std::vector<const CardWeakPtrVector *>;
