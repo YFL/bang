@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Card.h>
+#include <CardCollapsingContainer.h>
 
 #include <ECS.h>
 #include <EventHandler.h>
@@ -11,8 +11,8 @@ namespace Bang
 {
 
 class Deck
-  : public Utils::IEventHandler<Utils::MouseButtonEvent>
-  , public Utils::IEventHandler<Utils::MouseMovementEvent>
+  : public Utils::IEventHandler<CardSelected>
+  , public Utils::IEventEmitter<CardSelected>
 {
 public:
   Deck();
@@ -37,8 +37,9 @@ public:
   { return _entity; }
 
 public:
-  auto Handle(const Utils::MouseButtonEvent &event) -> void override;
-  auto Handle(const Utils::MouseMovementEvent &event) -> void override;
+  auto Handle(const CardSelected &card) -> void override;
+
+public:
 
 private:
   CardWeakPtrVector _cards;

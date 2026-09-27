@@ -1,11 +1,11 @@
 #include <BangLib/Application.h>
+#include <BangLib/CardCollapsingHoveredHighlightingContainer.h>
 #include <BangLib/CreateDeck.h>
 #include <BangLib/GameState.h>
 #include <BangLib/GameStates.h>
 #include <BangLib/StateManager.h>
 #include <SDLUtilsLib/TextUtils.h>
 
-#include <GraphicsLib/CardCollapsingHoveredHighlightingContainer.h>
 #include <GraphicsLib/Positionable.h>
 #include <GraphicsLib/Screen.h>
 

@@ -1,18 +1,19 @@
 #pragma once
 
 #include <CardCollapsingContainer.h>
+#include <MouseButtonEvent.h>
 #include <MouseMovementEvent.h>
 
-namespace Graphics
+namespace Bang
 {
 
 class CardCollapsingHoveredHighlightingContainer
   : public CardCollapsingContainer
-  , public Utils::IEventHandler<Utils::MouseMovementEvent>
+  , Utils::IEventHandler<CardHovered>
 {
 public:
   CardCollapsingHoveredHighlightingContainer(
-    const PositionablePointer &parent,
+    const Graphics::PositionablePointer &parent,
     const Utils::DrawArea &area)
     : CardCollapsingContainer(parent, area)
   {
@@ -20,10 +21,13 @@ public:
   }
 
 public:
-  auto Handle(const Utils::MouseMovementEvent &event) -> void override;
+  auto Handle(const CardHovered &event) -> void override;
+
+public:
+
 
 private:
-  PositionableWeakPtr _zoomedChild = {};
+  CardWeakPtr _zoomedChild = {};
 };
 
-} // namespace Graphics
+} // namespace Bang

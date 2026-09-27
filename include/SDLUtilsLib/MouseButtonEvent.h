@@ -2,8 +2,14 @@
 
 #include <Position.h>
 
+#include <SDL.h>
+
 namespace Utils
 {
+
+static constexpr auto mouseLeftButton = SDL_BUTTON_LEFT;
+static constexpr auto mouseMiddleButton = SDL_BUTTON_MIDDLE;
+static constexpr auto mouseRightButton = SDL_BUTTON_RIGHT;
 
 struct MouseButtonEvent
 {

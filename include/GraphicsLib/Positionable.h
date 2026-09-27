@@ -75,16 +75,16 @@ public:
   auto GetParent() const -> PositionablePointer
   { return _parent.lock(); }
 
-  auto SwitchParent(PositionablePointer &parent) -> void;
+  auto SwitchParent(const PositionableWeakPtr &parent) -> void;
   auto SetPosition(const Utils::Position &position) -> void;
   auto SetSize(const Utils::TwoDSize &size) -> void;
   auto SetZoom(float zoom) -> void;
-  virtual auto AddChild(const PositionablePointer &child) -> void;
+  virtual auto AddChild(const PositionableWeakPtr &child) -> void;
   auto RemoveChild(const xg::Guid &childId) -> void;
 
 protected:
   PositionableWeakPtr _parent = {};
-  PositionablePtrVector _children = {};
+  PositionableWeakPtrVector _children = {};
   //! Draw area's position is relative to parent
   Utils::DrawArea _drawArea = {};
 };

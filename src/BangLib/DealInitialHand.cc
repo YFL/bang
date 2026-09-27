@@ -46,7 +46,7 @@ auto AddHandsToScreen(const Bang::PlayerPointerVector &players) -> void
     const auto cardCollapsingContainerY = playerPosition.position.y;
 
     auto cardCollapsingContainer =
-      std::make_shared<Graphics::CardCollapsingHoveredHighlightingContainer>(
+      std::make_shared<Bang::CardCollapsingHoveredHighlightingContainer>(
         screen,
         Utils::DrawArea
         {

@@ -12,10 +12,11 @@ namespace Bang
 Deck::Deck()
 {
   const auto cardSize = Application::Get().configComponent->CardSize();
-  auto cardCollapsingContainer = std::make_shared<Graphics::CardCollapsingContainer>(
+  auto cardCollapsingContainer = std::make_shared<CardCollapsingContainer>(
     nullptr,
     Utils::DrawArea{ {0, 0, 0}, Utils::ConvertTo(cardSize, Utils::LengthUnits::px) });
-  _entity->AddComponent<Graphics::Positionable>(std::dynamic_pointer_cast<Graphics::Positionable>(cardCollapsingContainer));
+  _entity->AddComponent<Graphics::Positionable>(
+    std::dynamic_pointer_cast<Graphics::Positionable>(cardCollapsingContainer));
 }
 
 auto Deck::AddCard(const CardPointer &card) -> void
@@ -44,14 +45,26 @@ auto Deck::Shuffle() -> void
     std::mt19937{ std::random_device{}() });
 }
 
-auto Deck::Handle(const Utils::MouseButtonEvent &event) -> void
+auto Deck::Handle(const CardSelected &event) -> void
 {
-  std::cerr << "Deck::Handle(const Utils::MouseButtonEvent &event) is not implemented yet" << std::endl;
-}
+  if (event.card.expired())
+  {
+    std::cerr << "Selected card has expired." << std::endl;
+    return;
+  }
 
-auto Deck::Handle(const Utils::MouseMovementEvent &event) -> void
-{
-  std::cerr << "Deck::Handle(const Utils::MouseMovementEvent &event) is not implemented yet" << std::endl;
+  auto card = event.card.lock();
+
+  const auto newEnd = std::remove_if(
+    _cards.begin(),
+    _cards.end(),
+    [&card](const CardWeakPtr &cardInDeck)
+    {
+      return cardInDeck.lock() == card;
+    });
+  _cards.erase(newEnd, _cards.end());
+  card->Entity()->Get<Graphics::Positionable>()->SwitchParent({});
+  Utils::IEventEmitter<CardSelected>::Emit({ card });
 }
 
 } // namespace Bang

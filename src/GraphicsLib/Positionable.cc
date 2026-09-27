@@ -22,17 +22,20 @@ auto Positionable::operator=(Positionable &&move) noexcept -> Positionable &
   _drawArea = std::move(move._drawArea);
   if(!_parent.expired())
     _parent.lock()->AddChild(shared_from_this());
+  _children = std::move(move._children);
 
   return *this;
 }
 
 auto Positionable::operator==(const Positionable &other) const -> bool
 {
-  return Id == other.Id && GetAbsoluteDrawArea() == other.GetAbsoluteDrawArea();
+  return Id == other.Id;
 }
 
-auto Positionable::AddChild(const std::shared_ptr<Positionable> &child) -> void
+auto Positionable::AddChild(const PositionableWeakPtr &child) -> void
 {
+  if (child.expired())
+    return;
   _children.push_back(child);
 }
 
@@ -49,7 +52,7 @@ auto Positionable::RemoveChild(const xg::Guid &childId) -> void
   _children.erase(deleteFirst, deleteLast);
 }
 
-auto Positionable::SwitchParent(PositionablePointer &parent) -> void
+auto Positionable::SwitchParent(const PositionableWeakPtr &parent) -> void
 {
   auto parentLocked = _parent.lock();
   if(parentLocked)

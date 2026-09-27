@@ -16,6 +16,11 @@ class Mouse
   , public IEventHandler<SDL_MouseMotionEvent>
 {
 public:
+  static constexpr auto leftButton = SDL_BUTTON(SDL_BUTTON_LEFT);
+  static constexpr auto middleButton = SDL_BUTTON(SDL_BUTTON_MIDDLE);
+  static constexpr auto rightButton = SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+public:
   Mouse()
     : IEventEmitter<MouseButtonEvent>{}
     , IEventEmitter<MouseMovementEvent> {}

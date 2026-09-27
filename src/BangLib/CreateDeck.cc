@@ -95,11 +95,6 @@ auto CreateDeck::Update(GameState &gameState) -> bool
         * Utils::ConvertLengthUnit(cardSize.unit, Utils::LengthUnits::px)),
       0
     });
-  auto *mouse = &Application::Get().inputComponent->mouse;
-  dynamic_cast<Utils::IEventEmitter<Utils::MouseMovementEvent> *>(mouse)
-    ->RegisterHandler(gameState.drawDeck);
-  dynamic_cast<Utils::IEventEmitter<Utils::MouseButtonEvent> *>(mouse)
-    ->RegisterHandler(gameState.drawDeck);
   return false;
 }
 
